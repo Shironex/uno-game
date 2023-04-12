@@ -3,7 +3,8 @@
   "version": "1.0.1",
   "scripts": {
     "build": "cd Server && yarn && yarn build",
-    "start": "cd Server && yarn start"
+    "start": "cd Client && yarn build --outDir ../Server/client/build && cd Server && yarn start",
+    "heroku": "heroku logs -a uno-game --tail"
   },
   "dependencies": {},
   "devDependencies": {},
