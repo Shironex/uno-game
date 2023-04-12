@@ -2,7 +2,7 @@
   "name": "uno-app",
   "version": "1.0.1",
   "scripts": {
-    "build": "cd Client && yarn && yarn build --outDir ../Server/client/build && cd Server && yarn && yarn build",
+    "build": "cd Client && yarn && yarn build --outDir ../Server/client/build && cd ../Server && yarn && yarn build",
     "start": "cd Server && yarn start",
     "heroku": "heroku logs -a uno-game --tail"
   },
