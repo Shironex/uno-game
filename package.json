@@ -2,9 +2,8 @@
   "name": "uno-app",
   "version": "1.0.1",
   "scripts": {
-    "install-server": "cd Server && yarn",
-    "build-server": "cd Server && yarn build",
-    "build": "yarn install && yarn install-server && yarn build-server",
+    "install-server": "cd Server && yarn && yarn build",
+    "build": "yarn install-server",
     "start": "cd Server && yarn start"
   },
   "dependencies": {},
