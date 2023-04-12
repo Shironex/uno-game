@@ -4,7 +4,7 @@
   "scripts": {
     "install-server": "cd Server && yarn",
     "build-server": "cd Server && yarn build",
-    "build": "yarn install-server && yarn build-server",
+    "build": "yarn install && yarn install-server && yarn build-server",
     "start": "cd Server && yarn start"
   },
   "dependencies": {},
