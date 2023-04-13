@@ -11,26 +11,23 @@ type TProps = {
   children: ReactNode;
 };
 
-type TGameboard = {
-  id: number;
-  name: string;
-  players: number;
-};
-
 type TSocketContext = {
   socket: Socket | null;
   on: (eventName: string, callback: (data: any) => void) => void;
   emit: (eventName: string, data: any) => void;
   off: (eventName: string) => void;
+  isConnected: boolean;
 };
 
-const SOCKET_IO_SERVER_URL = "ws://uno-game.herokuapp.com";
+//const SOCKET_IO_SERVER_URL = "ws://uno-game.herokuapp.com";
+const SOCKET_IO_SERVER_URL = "ws://localhost:3000";
 
 const SocketContext = createContext<TSocketContext>({
   socket: null,
   on: () => {},
   emit: () => {},
   off: () => {},
+  isConnected: false,
 });
 
 export const useSocket = () => {
@@ -39,6 +36,7 @@ export const useSocket = () => {
 
 const SocketProvider = ({ children }: TProps) => {
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     const newSocket = io(SOCKET_IO_SERVER_URL);
@@ -46,6 +44,17 @@ const SocketProvider = ({ children }: TProps) => {
 
     newSocket.on("connect", () => {
       console.log("Socket connected successfully!");
+      setIsConnected(true);
+    });
+
+    newSocket.on("connect_error", () => {
+      console.log("Socket Connection Error!");
+      setIsConnected(false);
+    });
+    
+    newSocket.on("disconnect", () => {
+      console.log("Socket Disconnected!");
+      setIsConnected(false);
     });
 
     return () => {
@@ -78,6 +87,7 @@ const SocketProvider = ({ children }: TProps) => {
     on,
     emit,
     off,
+    isConnected
   };
 
   return (

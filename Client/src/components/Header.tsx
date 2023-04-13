@@ -1,20 +1,28 @@
 import React from "react";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
-import { SignedIn, SignedOut, UserButton, SignInButton   } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
+import {
+  SignedIn,
+  SignedOut,
+  UserButton,
+  SignInButton,
+} from "@clerk/clerk-react";
+import { BsWallet, BsBell } from "react-icons/bs";
+import { RiBaseStationLine } from "react-icons/ri";
+import { useSocket } from "../context/SocketContext";
 
 const HeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: #282936;
+  background-color: #1b1f24;
   color: #fff;
 `;
 
 const Title = styled.h1`
   font-size: 24px;
-  margin: 0;
+  margin-left: 18px;
 `;
 
 const Nav = styled.nav`
@@ -22,18 +30,15 @@ const Nav = styled.nav`
   align-items: center;
   justify-content: space-around;
   gap: 25px;
-`;
 
-const Button = styled.button`
-  background: #b19df7;
-  color: #333;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  &:hover {
-    background-color: #a28af5;
+  svg {
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    width: 20px;
+    height: 22px;
+  }
+  svg:hover {
+    color: #f27d0a;
   }
 `;
 
@@ -49,26 +54,23 @@ const Label = styled(Link)`
 `;
 
 const Header = () => {
-  const navigate = useNavigate();
-
-
-  function HandleNavigate()
-  {
-    navigate("/login");
-  }
-
+  const { isConnected } = useSocket();
   return (
     <HeaderWrapper>
       <Title>Uno Game</Title>
 
       <Nav>
-        <Label to="/">Lobby</Label>
+        <Label to="/live-games">Live Games</Label>
         <Label to="/create-lobby">Create Game</Label>
+        {isConnected ? <RiBaseStationLine style={{color: "green", cursor: "auto"}} /> : <RiBaseStationLine style={{color: "red", cursor: "auto"}} />}
+
+        <BsBell />
+        <BsWallet />
         <SignedIn>
           <UserButton />
         </SignedIn>
         <SignedOut>
-          <SignInButton  />
+          <SignInButton />
         </SignedOut>
       </Nav>
     </HeaderWrapper>

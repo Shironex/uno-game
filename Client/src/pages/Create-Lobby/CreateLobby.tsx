@@ -12,7 +12,7 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useSocket } from "../context/SocketContext";
+import { useSocket } from "../../context/SocketContext";
 import { useUser } from "@clerk/clerk-react";
 
 const Layout = styled.section`

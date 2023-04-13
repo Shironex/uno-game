@@ -3,6 +3,7 @@ import { Layout } from './styles/Layout';
 import Header from './components/Header';
 import GameDataTable from './components/Game-List/GameDataTable';
 import { useSocket } from './context/SocketContext';
+import NavBar from './components/NavBar/NavBar';
 
 
 type TGameBoard = {

@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
 export const Layout = styled.main`
-    background: #1d1e27;
+    background: #242830;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 0;
     height: 100vh;
 `

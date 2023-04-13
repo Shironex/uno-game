@@ -5,8 +5,11 @@ import SocketProvider from "./context/SocketContext";
 import Router from "./routers/Router";
 import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import AuthProvider from "./context/AuthContext";
+import { ClerkProvider } from "@clerk/clerk-react";
 // Create a client
 const queryClient = new QueryClient();
+const clerkPubKey = import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY;
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -14,7 +17,11 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <ChakraProvider>
       <SocketProvider>
         <QueryClientProvider client={queryClient}>
-            <Router />
+          <ClerkProvider publishableKey={clerkPubKey}>
+            <AuthProvider>
+              <Router />
+            </AuthProvider>
+          </ClerkProvider>
         </QueryClientProvider>
       </SocketProvider>
     </ChakraProvider>
