@@ -29,7 +29,6 @@ const Game = () => {
   const [selectedCard, setSelectedCard] = useState<TCard | undefined>();
   const [uno, SetUNO] = useState(false);
   const [isColorDialogOpen, setIsColorDialogOpen] = useState(false);
-  const { user } = useUser();
 
   useEffect(() => {
     //? Request Game Data for User that Join
@@ -50,7 +49,6 @@ const Game = () => {
           position: "top",
         });
       }
-      console.log(data);
       if (data && data.status == "in progress" && data.started == false) {
         const players = [...data.players];
         const bottomPlayer = playerName ? playerName : data.creator;
@@ -80,7 +78,7 @@ const Game = () => {
 
         toast({
           title: "Game Started.",
-          description: `Its ${data.currentPlayerTurn}`,
+          description: `Its ${data.currentPlayerTurn} turn!`,
           status: "info",
           duration: 3000,
           isClosable: true,
@@ -168,7 +166,7 @@ const Game = () => {
 
       toast({
         title: "Nex Turn.",
-        description: `Its ${data.currentPlayerTurn} Turn`,
+        description: `Its ${data.currentPlayerTurn} turn`,
         status: "info",
         duration: 1000,
         isClosable: true,

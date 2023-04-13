@@ -8,6 +8,8 @@ import {
   type GamePlayer,
   type TCard,
   PlayerSection,
+  Cardistack,
+  CardistackIMG,
 } from "./GameStyle";
 import CardsBack from "../../assets/card-back.png";
 import { imagecards } from "../../utils/helpers";
@@ -26,11 +28,23 @@ type Props = {
   setIsColorDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const PileSection = ({ gameSetup, currentPlayer, selectedCard, setSelectedCard, uno, SetUNO, isColorDialogOpen, setIsColorDialogOpen,}: Props) => {
+const PileSection = ({
+  gameSetup,
+  currentPlayer,
+  selectedCard,
+  uno,
+  SetUNO,
+  isColorDialogOpen,
+  setIsColorDialogOpen,
+}: Props) => {
   const { emit } = useSocket();
   const toast = useToast();
 
-  const handleCardClick = ( player: GamePlayer, card: string, TopCard: TCard) => {
+  const handleCardClick = (
+    player: GamePlayer,
+    card: string,
+    TopCard: TCard
+  ) => {
     const validPlayer = player.name == gameSetup?.currentPlayerTurn;
     //? We going to draw a Card
     if (validPlayer && card === "BackCard") {
@@ -38,9 +52,7 @@ const PileSection = ({ gameSetup, currentPlayer, selectedCard, setSelectedCard, 
         gameId: gameSetup.id,
         playerName: player.name,
       });
-    }
-    else 
-    {
+    } else {
       toast({
         title: "Move Error",
         description: `This Card Cant be placed`,
@@ -51,7 +63,7 @@ const PileSection = ({ gameSetup, currentPlayer, selectedCard, setSelectedCard, 
       });
     }
   };
-  
+
   const handleColorSelect = (color: Color, player: GamePlayer) => {
     setIsColorDialogOpen(false);
 
@@ -74,25 +86,57 @@ const PileSection = ({ gameSetup, currentPlayer, selectedCard, setSelectedCard, 
       {gameSetup &&
         gameSetup.players.map((player) => {
           const playerTurn = currentPlayer == gameSetup.currentPlayerTurn;
-          const latestDiscardedCard = gameSetup.discardPile[gameSetup.discardPile.length - 1]!.src;
-          const ChangedColor = gameSetup.discardPile[gameSetup.discardPile.length - 1]!.color;
-          const TopCard = gameSetup.discardPile[gameSetup.discardPile.length - 1];
-
+          const lastThreeCards = gameSetup.discardPile.slice(
+            gameSetup.discardPile.length - 4,
+            gameSetup.discardPile.length
+          );
+          const latestDiscardedCard =
+            gameSetup.discardPile[gameSetup.discardPile.length - 1]!.src;
+          const ChangedColor =
+            gameSetup.discardPile[gameSetup.discardPile.length - 1]!.color;
+          const TopCard =
+            gameSetup.discardPile[gameSetup.discardPile.length - 1];
+          console.log(lastThreeCards);
           if (currentPlayer == player.name) {
             return (
               <CardSection>
                 <CardImage
                   src={CardsBack}
                   isHoverable={playerTurn}
-                  onClick={() =>  handleCardClick(player, "BackCard", TopCard!)}
+                  onClick={() => handleCardClick(player, "BackCard", TopCard!)}
                 />
-                <label>Player Turn: <span style={{ display: 'block', textAlign: 'center' }}>{gameSetup.currentPlayerTurn}</span></label>
-                <CardImage
-                  src={imagecards[latestDiscardedCard]}
-                  isHoverable={false}
-                  onClick={() => console.log("discard Pile:", gameSetup.discardPile)}
-                  haveChangedColor={ChangedColor}
-                />
+                <label>
+                  Player Turn:{" "}
+                  <span style={{ display: "block", textAlign: "center" }}>
+                    {gameSetup.currentPlayerTurn}
+                  </span>
+                </label>
+                {gameSetup.discardPile.length > 3 ? (
+                  <Cardistack>
+                    {lastThreeCards.map((card, index) => {
+                      return (
+                        <CardistackIMG
+                          className={index === 3 ? "first" : ""}
+                          src={imagecards[card.src]}
+                          onClick={() =>
+                            console.log("discard Pile:", gameSetup.discardPile)
+                          }
+                          haveChangedColor={ChangedColor}
+                          CanRotate={gameSetup.discardPile.length > 3}
+                        />
+                      );
+                    })}
+                  </Cardistack>
+                ) : (
+                  <CardImage
+                    src={imagecards[latestDiscardedCard]}
+                    isHoverable={false}
+                    onClick={() =>
+                      console.log("discard Pile:", gameSetup.discardPile)
+                    }
+                    haveChangedColor={ChangedColor}
+                  />
+                )}
                 <ColorDialog
                   isOpen={isColorDialogOpen}
                   onClose={() => setIsColorDialogOpen(false)}
@@ -100,14 +144,12 @@ const PileSection = ({ gameSetup, currentPlayer, selectedCard, setSelectedCard, 
                 />
               </CardSection>
             );
-          }
-          else
-          {
+          } else {
             return (
               <PlayerSection position={player.position!}>
                 {player.name}
               </PlayerSection>
-            )
+            );
           }
         })}
     </Section>

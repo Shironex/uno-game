@@ -24,7 +24,7 @@ type TSocketContext = {
   off: (eventName: string) => void;
 };
 
-const SOCKET_IO_SERVER_URL = "ws://uno-game.herokuapp.com";
+const SOCKET_IO_SERVER_URL = "ws://uno-game.herokuapp.com:3000";
 
 const SocketContext = createContext<TSocketContext>({
   socket: null,

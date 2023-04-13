@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = "http://uno-typescript-xnpw.vercel.app:3000/api/v1";
+const BASE_URL = "http://localhost:3000/api/v1";
 
 export const axiosPublic = axios.create({
   baseURL: BASE_URL,

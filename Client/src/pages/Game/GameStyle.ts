@@ -136,7 +136,7 @@ export const CardSection = styled.div`
 `;
 
 export const PlayerSection = styled.section<PlayerProps>`
-  grid-column: ${({position}) => {
+  grid-column: ${({ position }) => {
     switch (position) {
       case "top":
         return "2 / 3";
@@ -150,7 +150,7 @@ export const PlayerSection = styled.section<PlayerProps>`
         return "";
     }
   }};
-  grid-row: ${({position}) => {
+  grid-row: ${({ position }) => {
     switch (position) {
       case "top":
         return "1 / 2";
@@ -267,5 +267,42 @@ export const CardImage = styled.img<PCard>`
   cursor: ${({ isHoverable }) => (isHoverable ? "pointer" : "default")};
   :hover {
     bottom: ${({ isHoverable }) => (isHoverable ? "5px" : "0")};
+  }
+`;
+
+export const Cardistack = styled.div`
+  position: relative;
+  width: 82px;
+  height: 82px;
+`;
+
+function getRandomRotationDegree(): number {
+  return Math.floor(Math.random() * 360);
+}
+
+type CardistackIMG = {
+  haveChangedColor?: string;
+  CanRotate: boolean;
+};
+
+export const CardistackIMG = styled.img<CardistackIMG>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: 82px;
+  max-height: 82px;
+  &.first {
+    -webkit-box-shadow: ${({ haveChangedColor }) =>
+      haveChangedColor ? getBoxShadow(haveChangedColor) : ""};
+    -moz-box-shadow: ${({ haveChangedColor }) =>
+      haveChangedColor ? getBoxShadow(haveChangedColor) : ""};
+    box-shadow: ${({ haveChangedColor }) =>
+      haveChangedColor ? getBoxShadow(haveChangedColor) : ""};
+    transform: rotate(0);
+  }
+  
+  &:not(.first) {
+    transform: rotate(${getRandomRotationDegree()}deg);
+    box-shadow: none;
   }
 `;
