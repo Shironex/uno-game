@@ -3,13 +3,14 @@ import styled from "styled-components";
 export type Game = {
   id: number;
   name: string;
-  creator: string;
+  leader: string;
+  coins: number;
   players: GamePlayer[];
-  maxPlayers: number;
+  maxplayers: number;
   currentPlayerTurn: string;
   drawPile: TCard[];
   discardPile: TCard[];
-  status: "waiting" | "in progress" | "finished";
+  status: "Currently Live" | "Finished" | "Waiting To Start";
   started: boolean;
 };
 

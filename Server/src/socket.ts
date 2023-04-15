@@ -2,12 +2,13 @@ import { Socket } from "socket.io";
 import constants from "./utils/constants";
 import { createGame, DrawCard, GameInfo, JoinGame, PlayCard } from "./controllers/gameController";
 import { io } from "./server";
+import helpers from "./utils/helpers";
 
 export const socketLogic = (socket: Socket) => {
   console.log(`Client ${socket.id} connected`);
 
   socket.on("Get-Game-List", () => {
-    socket.emit("Game-List", constants.GameBoard)
+    socket.emit("Game-List", helpers.getGameSummaries(constants.GameBoard))
   });
 
   socket.on("Get-Game-Info", (data) => GameInfo(socket, io, data));

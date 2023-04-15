@@ -1,7 +1,25 @@
 import { Server, Socket } from "socket.io";
-import { type Card, type Game } from "types/type";
+import { type Card, type Game, type GameSummary } from "types/type";
 
 export default {
+  getGameSummaries(games: Game[]): GameSummary[] {
+    return games.map((game) => {
+      const playerSummaries = game.players.map((player) => ({
+        name: player.name,
+        coins: 0,
+      }));
+      return {
+        id: game.id,
+        name: game.name,
+        coins: game.coins,
+        leader: game.leader,
+        players: playerSummaries,
+        maxplayers: game.maxplayers,
+        status: game.status,
+        gamemode: game.gamemode,
+      };
+    });
+  },
   findGameByName: (name: string, gameBoard: Game[]) =>
     gameBoard.find((game) => game.name === name),
   findRoomByName: (io: Server, name) => {

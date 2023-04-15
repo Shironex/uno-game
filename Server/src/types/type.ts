@@ -1,26 +1,35 @@
 import { Server, Socket as socket } from "socket.io";
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-}
-
 export interface Game {
   id: number;
   name: string;
-  creator: string;
+  leader: string;
+  coins: number;
   players: {
     name: string;
     deck?: { src: string }[];
   }[];
-  maxPlayers: number;
+  maxplayers: number;
   currentPlayerTurn: string;
   drawPile: Card[];
   discardPile: Card[];
-  status: "waiting" | "in progress" | "finished";
+  status: "Currently Live" | "Finished" | "Waiting To Start";
+  gamemode: "default" | "custom"; 
   started: boolean,
+}
+
+export interface GameSummary {
+  id: number;
+  name: string;
+  leader: string;
+  coins: number;
+  players: {
+    name: string;
+    coins: number;
+  }[];
+  maxplayers: number;
+  status: "Currently Live" | "Finished" | "Waiting To Start";
+  gamemode: "default" | "custom";
 }
 
 export type Io = Server;

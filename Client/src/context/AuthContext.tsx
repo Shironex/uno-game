@@ -14,6 +14,7 @@ type User = {
   id: string;
   firstName: string;
   lastName: string;
+  username: string;
   email: string;
 };
 
@@ -57,6 +58,7 @@ export const AuthProvider = ({ children }: Props) => {
       id: user.id,
       firstName: user.firstName!,
       lastName: user.lastName!,
+      username: user.username!,
       email: user.primaryEmailAddress?.emailAddress!,
     });
   }

@@ -3,24 +3,27 @@ import helpers from "../utils/helpers";
 import { type Game, type Socket, type Io} from "../types/type";
 
 type CreateGameData = {
-  creator: string;
+  leader: string;
   name: string;
-  maxPlayers: number;
+  maxplayers: number;
+  coins: number;
 };
 
 export const createGame = (socket: Socket, io: Io, data: CreateGameData) => {
-  const { creator, name, maxPlayers } = data;
+  const { leader, name, maxplayers, coins } = data;
   const id = constants.getNewGameid();
   console.log("Received message from client to create lobby:", data);
 
   const Game: Game = {
     id: id,
     name,
-    creator,
-    players: [{ name: creator }],
-    maxPlayers,
-    currentPlayerTurn: creator,
-    status: "waiting",
+    coins,
+    leader,
+    players: [{ name: leader }],
+    maxplayers,
+    currentPlayerTurn: leader,
+    status: "Waiting To Start",
+    gamemode: "default",
     started: false,
     discardPile: [],
     drawPile: [],
@@ -31,31 +34,31 @@ export const createGame = (socket: Socket, io: Io, data: CreateGameData) => {
   helpers.JoinRoomByName(socket, name);
 
   //? Emit the updated GameBoard to all the clients
-  io.emit("Game-List", constants.GameBoard);
+  io.emit("Game-List", helpers.getGameSummaries(constants.GameBoard));
   socket.emit("Get-Game-Data", Game);
 };
 
 type JoinGameData = {
-  name: string;
-  room: string;
+  username: string;
+  lobby: string;
 };
 
 export const JoinGame = (socket: Socket, io: Io, data: JoinGameData) => {
-  const { name, room } = data;
+  const { username, lobby } = data;
 
   //? Join Room
-  const gameRoom = `game-${room}`;
-  helpers.JoinRoomByName(socket, room);
+  const GameLobby = `game-${lobby}`;
+  helpers.JoinRoomByName(socket, lobby);
 
   //? Notify other clients in the same room that a new user has joined
-  socket.to(gameRoom).emit("user joined", data.name);
-  console.log(`${name} Joined Room: ${gameRoom}`);
+  socket.to(GameLobby).emit("user joined", data.username);
+  console.log(`${username} Joined Room: ${GameLobby}`);
 
   //? Find the game board with the same name as data.name and increment the player count
-  const foundGame = constants.GameBoard.find((game) => game.name === data.room);
+  const foundGame = constants.GameBoard.find((game) => game.name === data.lobby);
   if (foundGame) {
     foundGame.players.push({
-      name,
+      name: username,
     });
     //? Emit the updated GameBoard to all the clients
     io.emit("Game-Data", foundGame);
@@ -97,8 +100,8 @@ export const GameInfo = (socket: Socket, io: Io, data: string) => {
 
     let Game = constants.GameBoard.find((game) => game.name === data);
 
-    if (Game.players.length == Game.maxPlayers && Game.status == "waiting") {
-      Game.status = "in progress";
+    if (Game.players.length == Game.maxplayers && Game.status == "Waiting To Start") {
+      Game.status = "Currently Live";
       console.log(`Game: ${RoomName} is starting`);
       GameStart(Game);
     }

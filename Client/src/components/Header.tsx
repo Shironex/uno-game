@@ -10,6 +10,7 @@ import {
 import { BsWallet, BsBell } from "react-icons/bs";
 import { RiBaseStationLine } from "react-icons/ri";
 import { useSocket } from "../context/SocketContext";
+import Tabs from "./Tabs/Tabs";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -53,27 +54,57 @@ const Label = styled(Link)`
   }
 `;
 
+const LiveGamesTabs = [
+  {
+    label: "Live Games",
+    onTabClick: () => console.log("test"),
+  },
+  {
+    label: "Tournaments",
+    onTabClick: () => console.log("test"),
+  },
+  {
+    label: "Leaderboards",
+    onTabClick: () => console.log("test"),
+  },
+  {
+    label: "Game History",
+    onTabClick: () => console.log("test"),
+  },
+  {
+    label: "Achievements",
+    onTabClick: () => console.log("test"),
+  },
+];
+
 const Header = () => {
   const { isConnected } = useSocket();
   return (
-    <HeaderWrapper>
-      <Title>Uno Game</Title>
+    <>
+      <HeaderWrapper>
+        <Title>Uno Game</Title>
 
-      <Nav>
-        <Label to="/live-games">Live Games</Label>
-        <Label to="/create-lobby">Create Game</Label>
-        {isConnected ? <RiBaseStationLine style={{color: "green", cursor: "auto"}} /> : <RiBaseStationLine style={{color: "red", cursor: "auto"}} />}
+        <Nav>
+          <Label to="/live-games">Live Games</Label>
+          <Label to="/create-lobby">Create Game</Label>
+          {isConnected ? (
+            <RiBaseStationLine style={{ color: "green", cursor: "auto" }} />
+          ) : (
+            <RiBaseStationLine style={{ color: "red", cursor: "auto" }} />
+          )}
 
-        <BsBell />
-        <BsWallet />
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
-        <SignedOut>
-          <SignInButton />
-        </SignedOut>
-      </Nav>
-    </HeaderWrapper>
+          <BsBell />
+          <BsWallet />
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+        </Nav>
+      </HeaderWrapper>
+      <Tabs tabs={LiveGamesTabs} />
+    </>
   );
 };
 

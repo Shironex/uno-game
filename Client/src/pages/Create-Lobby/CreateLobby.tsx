@@ -23,7 +23,8 @@ const Layout = styled.section`
 const CreateLobby = () => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
-  const [maxPlayers, setmaxPlayers] = useState(2);
+  const [maxplayers, setmaxplayers] = useState(2);
+  const [coins, setcoins] = useState(100);
   const { user } = useUser();
 
   const navigate = useNavigate();
@@ -37,9 +38,10 @@ const CreateLobby = () => {
     }
     setTimeout(() => {
       socket.emit("Create-Game", {
-        creator: user?.firstName,
+        leader: user?.username,
         name,
-        maxPlayers,
+        maxplayers,
+        coins: coins
       });
       setLoading(false);
       navigate(`/lobby/${name}`);
@@ -72,7 +74,7 @@ const CreateLobby = () => {
                 min={2}
                 max={4}
                 color="#ffff"
-                onChange={(number) => setmaxPlayers(parseInt(number))}
+                onChange={(number) => setmaxplayers(parseInt(number))}
               >
                 <NumberInputField />
               </NumberInput>
@@ -80,6 +82,21 @@ const CreateLobby = () => {
             <FormHelperText color="#ffff">
               Maksymalna ilośc graczy to 4
             </FormHelperText>
+
+            <FormLabel marginTop="20px" color="#ffff">
+              Ilość Coinów do wygrania
+            </FormLabel>
+            <InputGroup width="300px">
+              <NumberInput
+                defaultValue={100}
+                min={100}
+                max={400}
+                color="#ffff"
+                onChange={(number) => setcoins(parseInt(number))}
+              >
+                <NumberInputField />
+              </NumberInput>
+            </InputGroup>
 
             <Button
               marginTop="20px"

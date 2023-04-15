@@ -17,7 +17,9 @@ const Routers = () => {
           path="/live-games"
           element={
             <ProtectedRoute>
-              <LiveGames />
+              <Layout>
+                <LiveGames />
+              </Layout>
             </ProtectedRoute>
           }
         />

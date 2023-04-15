@@ -14,8 +14,6 @@ import {
 } from "./GameStyle";
 import PlayerSection from "./PlayerSection";
 import PileSection from "./PileSection";
-//? Network stuff
-import { useUser } from "@clerk/clerk-react";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -39,7 +37,7 @@ const Game = () => {
     on("Get-Game-Data", (data: Game) => {
       setGameSetup(data);
       //? Indicate for creator that game got created successfully
-      if (gameSetup && gameSetup.status == "waiting" && playerName == null) {
+      if (gameSetup && gameSetup.status == "Waiting To Start" && playerName == null) {
         toast({
           title: "Game Created.",
           description: "Waiting for user to join.",
@@ -49,9 +47,9 @@ const Game = () => {
           position: "top",
         });
       }
-      if (data && data.status == "in progress" && data.started == false) {
+      if (data && data.status == "Currently Live" && data.started == false) {
         const players = [...data.players];
-        const bottomPlayer = playerName ? playerName : data.creator;
+        const bottomPlayer = playerName ? playerName : data.leader;
         const currentPlayer = players.find(
           (player) => player.name === bottomPlayer
         );
@@ -182,13 +180,13 @@ const Game = () => {
     };
   }, [id]);
 
-  if (gameSetup && (gameSetup.status == "waiting" || !gameSetup.started)) {
+  if (gameSetup && (gameSetup.status == "Waiting To Start" || !gameSetup.started)) {
     return (
       <Layout>
         <label style={{ color: "white" }}>Waiting For Players</label>
         <br />
         <label style={{ color: "white" }}>
-          {gameSetup.players.length} / {gameSetup.maxPlayers} have joined
+          {gameSetup.players.length} / {gameSetup.maxplayers} have joined
         </label>
       </Layout>
     );

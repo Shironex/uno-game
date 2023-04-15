@@ -10,7 +10,7 @@ type Props = {
 const Layout = (props: Props) => {
   return (
     <MainLayout>
-      <NavBar />
+      <Header />
       {props.children}
     </MainLayout>
   );
