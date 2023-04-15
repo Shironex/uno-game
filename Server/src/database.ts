@@ -1,33 +1,28 @@
-import { Pool, PoolClient } from "pg";
+import mongoose from "mongoose";
+import colorPrint from "./ColorPrint";
 
-interface DatabaseConfig {
-  user: string;
-  password: string;
-  host: string;
-  port: number;
-  database: string;
+async function ConnectToDataBase()
+{
+    const connectionParams = {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    } as mongoose.ConnectOptions
+
+    try  {
+        colorPrint(94,93,"MongoDB Handler", "> Trying to Connect ");
+        mongoose.set('strictQuery', true);
+        mongoose.connect(process.env.DATABASE_URL, connectionParams);
+        colorPrint(94,35,"MongoDB Handler", "> Connected ");
+
+        mongoose.connection.on("error", err => {
+            colorPrint(31,30,"MongoDB Handler", `> ${err}`);
+        });
+        
+    } catch(error)
+    {
+        colorPrint(31,30,"MongoDB Handler", `> ${error} `);
+        colorPrint(31,30,"MongoDB Handler", "> Couldnt Connect to Server ");
+    }
 }
 
-const config: DatabaseConfig = {
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  database: process.env.DB_NAME,
-};
-
-const pool = new Pool(config);
-
-const connect = new Promise<void>((resolve, reject) => {
-    pool.connect((err: Error, client: PoolClient, release: () => void) => {
-      if (err) {
-        reject(err);
-        return console.error("Error acquiring client", err.stack);
-      }
-      console.log("Connected to database");
-      release();
-      resolve();
-    });
-  });
-
-export { connect };
+export default ConnectToDataBase;

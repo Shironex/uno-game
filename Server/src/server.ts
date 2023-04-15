@@ -4,7 +4,9 @@ import { Server } from "socket.io";
 import { socketLogic } from "./socket";
 import routes from "./routes/index";
 import cors from "cors";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
+import ConnectToDataBase from "./database";
+import colorPrint from "./ColorPrint";
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
@@ -34,13 +36,14 @@ app.use(express.json());
 //! Api
 app.use("/api/v1/", routes);
 
-app.use(express.static('client/build'));
-
+app.use(express.static("client/build"));
 
 //! Socket Connection
 io.on("connection", socketLogic);
 
 //! Database Connection
-server.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+ConnectToDataBase().then(() => {
+  server.listen(PORT, () => {
+    colorPrint(94,93,"Server Handler", `> Server listening on port ${PORT}`);
+  });
 });

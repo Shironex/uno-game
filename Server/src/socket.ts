@@ -3,9 +3,10 @@ import constants from "./utils/constants";
 import { createGame, DrawCard, GameInfo, JoinGame, PlayCard } from "./controllers/gameController";
 import { io } from "./server";
 import helpers from "./utils/helpers";
+import colorPrint from "./ColorPrint";
 
 export const socketLogic = (socket: Socket) => {
-  console.log(`Client ${socket.id} connected`);
+  colorPrint(94,35,"Socket Handler", `> Client ${socket.id} connected `);
 
   socket.on("Get-Game-List", () => {
     socket.emit("Game-List", helpers.getGameSummaries(constants.GameBoard))
@@ -22,7 +23,7 @@ export const socketLogic = (socket: Socket) => {
   socket.on("Draw-Card", (data) => DrawCard(socket,io, data))
 
   socket.on("disconnect", () => {
-    console.log(`Client ${socket.id} disconnected`);
+    colorPrint(31,30,"Socket Handler", `> Client ${socket.id} disconnected `);
   });
 
   socket.on("chat message", (msg: string) => {
