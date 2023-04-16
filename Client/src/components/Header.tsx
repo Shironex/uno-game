@@ -1,18 +1,19 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   SignedIn,
   SignedOut,
   UserButton,
   SignInButton,
+  useClerk
 } from "@clerk/clerk-react";
 import { BsWallet, BsBell } from "react-icons/bs";
 import { RiBaseStationLine } from "react-icons/ri";
 import { useSocket } from "../context/SocketContext";
 import Tabs from "./Tabs/Tabs";
 
-const HeaderWrapper = styled.div`
+const HeaderWrapper = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -26,7 +27,7 @@ const Title = styled.h1`
   margin-left: 18px;
 `;
 
-const Nav = styled.nav`
+const NavSection = styled.section`
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -54,39 +55,44 @@ const Label = styled(Link)`
   }
 `;
 
-const LiveGamesTabs = [
-  {
-    label: "Live Games",
-    onTabClick: () => console.log("test"),
-  },
-  {
-    label: "Tournaments",
-    onTabClick: () => console.log("test"),
-  },
-  {
-    label: "Leaderboards",
-    onTabClick: () => console.log("test"),
-  },
-  {
-    label: "Game History",
-    onTabClick: () => console.log("test"),
-  },
-  {
-    label: "Achievements",
-    onTabClick: () => console.log("test"),
-  },
-];
+
 
 const Header = () => {
   const { isConnected } = useSocket();
+  const navigate = useNavigate();
+  const LiveGamesTabs = [
+    {
+      label: "Live Games",
+      onTabClick: () => navigate("/live-games"),
+    },
+    {
+      label: "Create Game",
+      onTabClick: () => navigate("/create-lobby"),
+    },
+    {
+      label: "Tournaments",
+      onTabClick: () => navigate("/create-lobby-2"),
+    },
+    {
+      label: "Leaderboards",
+      onTabClick: () => console.log("test"),
+    },
+    {
+      label: "Game History",
+      onTabClick: () => console.log("test"),
+    },
+    {
+      label: "Achievements",
+      onTabClick: () => console.log("test"),
+    },
+  ];
+
   return (
     <>
       <HeaderWrapper>
         <Title>Uno Game</Title>
+        <NavSection>
 
-        <Nav>
-          <Label to="/live-games">Live Games</Label>
-          <Label to="/create-lobby">Create Game</Label>
           {isConnected ? (
             <RiBaseStationLine style={{ color: "green", cursor: "auto" }} />
           ) : (
@@ -99,9 +105,9 @@ const Header = () => {
             <UserButton />
           </SignedIn>
           <SignedOut>
-            <SignInButton />
+            <SignInButton afterSignUpUrl="/live-games" />
           </SignedOut>
-        </Nav>
+        </NavSection>
       </HeaderWrapper>
       <Tabs tabs={LiveGamesTabs} />
     </>

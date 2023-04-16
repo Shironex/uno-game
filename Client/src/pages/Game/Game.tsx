@@ -14,6 +14,7 @@ import {
 } from "./GameStyle";
 import PlayerSection from "./PlayerSection";
 import PileSection from "./PileSection";
+import WaitingPage from "../Waiting-Lobby/WaitingPage";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ const Game = () => {
   const { on, off, emit } = useSocket();
   const { search } = useLocation();
   const toast = useToast();
+  const toastCardPlacedId = "Auto Placed";
+
   const playerName = new URLSearchParams(search).get("playerName");
   const [gameSetup, setGameSetup] = useState<Game | null>(null);
   const [currentPlayer, setCurrentPlayer] = useState<string>("");
@@ -86,14 +89,18 @@ const Game = () => {
     });
 
     on("Card-Placed", (Card: string) => {
-      toast({
-        title: "Auto Placed",
-        description: `${Card} Have been placed`,
-        status: "info",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
+      if (!toast.isActive(toastCardPlacedId))
+      {
+        toast({
+          id: toastCardPlacedId,
+          title: "Auto Placed",
+          description: `${Card} Have been placed`,
+          status: "info",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+      }
     });
 
     on("user joined", (user: string) => {
@@ -181,15 +188,7 @@ const Game = () => {
   }, [id]);
 
   if (gameSetup && (gameSetup.status == "Waiting To Start" || !gameSetup.started)) {
-    return (
-      <Layout>
-        <label style={{ color: "white" }}>Waiting For Players</label>
-        <br />
-        <label style={{ color: "white" }}>
-          {gameSetup.players.length} / {gameSetup.maxplayers} have joined
-        </label>
-      </Layout>
-    );
+    return <WaitingPage lobbyname={gameSetup.name} numberOfPlayers={gameSetup.players.length} maxplayers={gameSetup.maxplayers} />;
   }
 
   return (

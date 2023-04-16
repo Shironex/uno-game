@@ -12,30 +12,40 @@ type CreateGameData = {
 export const createGame = (socket: Socket, io: Io, data: CreateGameData) => {
   const { leader, name, maxplayers, coins } = data;
   const id = constants.getNewGameid();
-  console.log("Received message from client to create lobby:", data);
 
-  const Game: Game = {
-    id: id,
-    name,
-    coins,
-    leader,
-    players: [{ name: leader }],
-    maxplayers,
-    currentPlayerTurn: leader,
-    status: "Waiting To Start",
-    gamemode: "default",
-    started: false,
-    discardPile: [],
-    drawPile: [],
-  };
-  constants.GameBoard.push(Game);
+  const room = helpers.findRoomByName(io, `game-${data.name}`);
+  if (room) {
+    console.log(`Room already exist game-${data.name}`);
+    console.log(room);
 
-  //? Join Room
-  helpers.JoinRoomByName(socket, name);
+    socket.emit("Game-Exist");
+  } else {
+    console.log("Received message from client to create lobby:", data);
 
-  //? Emit the updated GameBoard to all the clients
-  io.emit("Game-List", helpers.getGameSummaries(constants.GameBoard));
-  socket.emit("Get-Game-Data", Game);
+    const Game: Game = {
+      id: id,
+      name,
+      coins,
+      leader,
+      players: [{ name: leader }],
+      maxplayers,
+      currentPlayerTurn: leader,
+      status: "Waiting To Start",
+      gamemode: "default",
+      started: false,
+      discardPile: [],
+      drawPile: [],
+    };
+    constants.GameBoard.push(Game);
+
+    //? Join Room
+    helpers.JoinRoomByName(io, socket, `game-${data.name}`);
+
+    socket.emit("Game-Created", data.name);
+    //? Emit the updated GameBoard to all the clients
+    io.emit("Game-List", helpers.getGameSummaries(constants.GameBoard));
+    socket.emit("Get-Game-Data", Game);
+  }
 };
 
 type JoinGameData = {
@@ -46,24 +56,26 @@ type JoinGameData = {
 export const JoinGame = (socket: Socket, io: Io, data: JoinGameData) => {
   const { username, lobby } = data;
 
-  //? Join Room
+  // Join Room
   const GameLobby = `game-${lobby}`;
-  helpers.JoinRoomByName(socket, lobby);
+  const FindUserInRoom = helpers.findSocketInRoom(io, socket, GameLobby);
+  const GameToJoin = constants.GameBoard.find((game) => game.name === data.lobby);
+  const IsUserInGame = GameToJoin.players.some((player) => player.name === username);  
+  
+  console.log(IsUserInGame);
 
-  //? Notify other clients in the same room that a new user has joined
-  socket.to(GameLobby).emit("user joined", data.username);
-  console.log(`${username} Joined Room: ${GameLobby}`);
+  if (!FindUserInRoom && GameToJoin && !IsUserInGame) {
+    helpers.JoinRoomByName(io, socket, GameLobby);
 
-  //? Find the game board with the same name as data.name and increment the player count
-  const foundGame = constants.GameBoard.find(
-    (game) => game.name === data.lobby
-  );
-  if (foundGame) {
-    foundGame.players.push({
+    GameToJoin.players.push({
       name: username,
     });
-    //? Emit the updated GameBoard to all the clients
-    io.emit("Game-Data", foundGame);
+
+    socket.to(GameLobby).emit("user joined", data.username);
+    io.emit("Game-Data", GameToJoin);
+    socket.emit("Game-User-Join");
+  } else if (IsUserInGame) {
+    socket.emit("Game-User-Exist");
   }
 };
 
@@ -96,16 +108,16 @@ const GameStart = (Game: Game) => {
 
 export const GameInfo = (socket: Socket, io: Io, data: string) => {
   const RoomName = `game-${data}`;
-  const Room = helpers.findRoomByName(io, data);
-  if (Room && Room.has(socket.id)) {
-    console.log(`User ${socket.id} requested ${RoomName} data `);
+  const IsInGame = helpers.findSocketInRoom(io, socket, RoomName);
+  // console.log(`${socket.id} want ${RoomName} Data`);
+
+  if (IsInGame) {
+    // console.log(`User ${socket.id} requested ${RoomName} data `);
 
     let Game = constants.GameBoard.find((game) => game.name === data);
 
-    if (
-      Game.players.length == Game.maxplayers &&
-      Game.status == "Waiting To Start"
-    ) {
+    if (Game.players.length == Game.maxplayers && Game.status == "Waiting To Start") 
+    {
       Game.status = "Currently Live";
       console.log(`Game: ${RoomName} is starting`);
       GameStart(Game);
@@ -131,10 +143,8 @@ export const PlayCard = (socket: Socket, io: Io, data: PlayCardData) => {
   if (Game.started == false) Game.started = true;
 
   Game.players.forEach(async (player, index) => {
-    if (
-      player.name === data.playerName &&
-      player.name === Game.currentPlayerTurn
-    ) {
+    if ( player.name === data.playerName && player.name === Game.currentPlayerTurn) 
+    {
       const cardIndex = player.deck.findIndex((card) => card.src === data.card);
       if (cardIndex !== -1) {
         player.deck.splice(cardIndex, 1);
@@ -144,8 +154,7 @@ export const PlayCard = (socket: Socket, io: Io, data: PlayCardData) => {
           ...(data.color && { color: data.color }),
         });
 
-        const nextPlayerIndex = (index + 1) % Game.players.length;
-        Game.currentPlayerTurn = Game.players[nextPlayerIndex].name;
+
 
         if (player.deck.length == 1) {
           if (data.uno) {
@@ -158,6 +167,12 @@ export const PlayCard = (socket: Socket, io: Io, data: PlayCardData) => {
 
         if (player.deck.length == 0) {
           //? Player won
+          io.to(`game-${Game.name}`).emit("Player-Played-Card", {
+            started: Game.started,
+            players: Game.players,
+            discardPile: Game.discardPile,
+            currentPlayerTurn: Game.currentPlayerTurn,
+          });
           io.to(`game-${Game.name}`).emit("Player-Won", player.name);
 
           //socket.emit("Player-Gift", null);
@@ -165,12 +180,15 @@ export const PlayCard = (socket: Socket, io: Io, data: PlayCardData) => {
             (Game) => Game.id === Game.id
           );
           constants.GameBoard.splice(GameIndex, 1);
+          helpers.RemoveSocketInRoom(io, `game-${Game.name}`);
           //TODO FIX Game Score Save
           return;
         }
 
+        const nextPlayerIndex = (index + 1) % Game.players.length;
+        Game.currentPlayerTurn = Game.players[nextPlayerIndex].name;
+
         if (data.effect) {
-          console.log(data.effect);
           switch (data.effect) {
             case "D4":
               Game.players[nextPlayerIndex].deck = [

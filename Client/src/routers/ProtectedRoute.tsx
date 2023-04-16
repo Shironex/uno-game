@@ -8,7 +8,6 @@ type Props = {
 
 const ProtectedRoute = ({ children } : Props) => {
   const { isSignedIn } = useAuth();
-  console.log(isSignedIn);
   if (!isSignedIn)
   {
     return <UnAuthorizedPage />

@@ -22,13 +22,35 @@ export default {
   },
   findGameByName: (name: string, gameBoard: Game[]) =>
     gameBoard.find((game) => game.name === name),
-  findRoomByName: (io: Server, name) => {
-    const roomId = `game-${name}`;
-    return io.sockets.adapter.rooms.get(roomId);
+  findRoomByName: (io: Server, name: string) => {
+    return io.sockets.adapter.rooms.get(name);
   },
-  JoinRoomByName: (socket: Socket, name: string) => {
-    const roomId = `game-${name}`;
-    return socket.join(roomId);
+  findSocketInRoom: (io: Server, socket: Socket, name: string) =>
+  {
+    const room = io.sockets.adapter.rooms.get(name);
+    if (room && room.has(socket.id)) {
+      return true;
+    }
+    return false;
+  },
+  RemoveSocketInRoom: (io: Server, name: string) => {
+    const room = io.sockets.adapter.rooms.get(name);
+    if (room)
+    {
+      room.forEach((socketPlayer) => {
+        const player = io.sockets.sockets.get(socketPlayer);
+        if (player)
+        {
+          player.leave(name);
+        }
+        const deletedRoom = io.sockets.adapter.rooms.delete(name);
+        console.log(deletedRoom);
+      })
+    }
+  },
+  JoinRoomByName: (io: Server, socket: Socket, name: string) => {
+    const allRooms = io.sockets.adapter.rooms.get(name);
+    return socket.join(name);
   },
   shuffleArray: <T>(array: T[]): T[] => {
     let currentIndex: number = array.length;

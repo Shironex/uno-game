@@ -28,23 +28,11 @@ type Props = {
   setIsColorDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const PileSection = ({
-  gameSetup,
-  currentPlayer,
-  selectedCard,
-  uno,
-  SetUNO,
-  isColorDialogOpen,
-  setIsColorDialogOpen,
-}: Props) => {
+const PileSection = ({ gameSetup, currentPlayer, selectedCard, uno, SetUNO, isColorDialogOpen, setIsColorDialogOpen,}: Props) => {
   const { emit } = useSocket();
   const toast = useToast();
 
-  const handleCardClick = (
-    player: GamePlayer,
-    card: string,
-    TopCard: TCard
-  ) => {
+  const handleCardClick = ( player: GamePlayer, card: string,) => {
     const validPlayer = player.name == gameSetup?.currentPlayerTurn;
     //? We going to draw a Card
     if (validPlayer && card === "BackCard") {
@@ -83,27 +71,19 @@ const PileSection = ({
 
   return (
     <Section>
-      {gameSetup &&
-        gameSetup.players.map((player) => {
+      {gameSetup && gameSetup.players.map((player) => {
           const playerTurn = currentPlayer == gameSetup.currentPlayerTurn;
-          const lastThreeCards = gameSetup.discardPile.slice(
-            gameSetup.discardPile.length - 4,
-            gameSetup.discardPile.length
-          );
-          const latestDiscardedCard =
-            gameSetup.discardPile[gameSetup.discardPile.length - 1]!.src;
-          const ChangedColor =
-            gameSetup.discardPile[gameSetup.discardPile.length - 1]!.color;
-          const TopCard =
-            gameSetup.discardPile[gameSetup.discardPile.length - 1];
-          console.log(lastThreeCards);
+          const lastThreeCards = gameSetup.discardPile.slice( gameSetup.discardPile.length - 4, gameSetup.discardPile.length);
+          const latestDiscardedCard = gameSetup.discardPile[gameSetup.discardPile.length - 1]!.src;
+          const ChangedColor =gameSetup.discardPile[gameSetup.discardPile.length - 1]!.color;
+
           if (currentPlayer == player.name) {
             return (
               <CardSection>
                 <CardImage
                   src={CardsBack}
                   isHoverable={playerTurn}
-                  onClick={() => handleCardClick(player, "BackCard", TopCard!)}
+                  onClick={() => handleCardClick(player, "BackCard"!)}
                 />
                 <label>
                   Player Turn:{" "}

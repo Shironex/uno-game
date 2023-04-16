@@ -131,7 +131,7 @@ export const isValidPlay = (card: string, topCard: Card): { valid: boolean, effe
   const topColor = topCard.color || topCard.src[topCard.src.length - 1];
   const topValue = topCard.src.substring(0, topCard.src.length - 1);
   
-  console.log(`Card Placed is ${card} and values`, color, value);
+  // console.log(`Card Placed is ${card} and values`, color, value);
 
   if (card === 'D4W') {
     return { valid: true, effect: 'D4' };

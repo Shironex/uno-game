@@ -1,10 +1,8 @@
-import {
-  createContext,
-  useContext,
-  ReactNode,
-} from "react";
+import { createContext, useContext, ReactNode } from "react";
 import { useUser, useAuth as useClerckAuth } from "@clerk/clerk-react";
 import { Spinner } from "@chakra-ui/react";
+import { InfoWrapper } from "../pages/Live-Games/LiveGameStyle";
+import Loader from "../components/ui/Loader/Loader";
 
 type Props = {
   children: ReactNode;
@@ -37,33 +35,24 @@ export const AuthProvider = ({ children }: Props) => {
   const { isLoaded, isSignedIn } = useClerckAuth();
   let userObject = null;
 
-
   if (!isLoaded) {
     return (
-      <div style={{height: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
-        <Spinner
-          thickness="4px"
-          speed="0.65s"
-          emptyColor="gray.200"
-          color="#b19df7"
-          size="xl"
-        />
-        loading Instance...
-      </div>
+      <InfoWrapper>
+        <Loader />
+        loading Connection...
+      </InfoWrapper>
     );
   }
 
   if (isSignedIn && user) {
-    userObject = ({
+    userObject = {
       id: user.id,
       firstName: user.firstName!,
       lastName: user.lastName!,
       username: user.username!,
       email: user.primaryEmailAddress?.emailAddress!,
-    });
+    };
   }
-
-  console.log(userObject)
 
   return (
     <AuthContext.Provider value={{ user: userObject, isSignedIn }}>

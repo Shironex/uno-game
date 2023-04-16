@@ -1,18 +1,24 @@
 import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import App from "../App";
 import CreateLobby from "../pages/Create-Lobby/CreateLobby";
 import Layout from "../Layout/Layout";
 import Game from "../pages/Game/Game";
-import LoginPage from "../pages/Login/LoginPage";
 import ProtectedRoute from "./ProtectedRoute";
 import LiveGames from "../pages/Live-Games/LiveGames";
+import JoinLobby from "../pages/Join-Lobby/JoinLobby";
 
 const Routers = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<App />} />
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <LiveGames />
+            </Layout>
+          }
+        />
         <Route
           path="/live-games"
           element={
@@ -31,7 +37,14 @@ const Routers = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/join/:id"
+          element={
+            <ProtectedRoute>
+              <JoinLobby />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/create-lobby"
           element={
