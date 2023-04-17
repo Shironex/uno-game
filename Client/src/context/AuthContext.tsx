@@ -34,6 +34,8 @@ export const AuthProvider = ({ children }: Props) => {
   const { isLoaded, isSignedIn } = useClerckAuth();
   let userObject = null;
 
+  console.log(import.meta.env.PORT);
+
   if (!isLoaded) {
     return (
       <AuthWrapper>
