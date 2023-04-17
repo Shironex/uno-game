@@ -3,8 +3,7 @@ import React from "react";
 import { Label, Line, Title, Wrapper } from "./UnAuthorizedStyle";
 import { useNavigate } from "react-router-dom";
 
-
-const UnAuthorizedPage = () => { 
+const UnAuthorizedPage = () => {
   const navigate = useNavigate();
 
   function HandleHome() {
@@ -16,7 +15,14 @@ const UnAuthorizedPage = () => {
       <Title>401</Title>
       <Label>Unauthorized</Label>
       <Line />
-      <Button onClick={HandleHome} type="button" background="#b19df7" color="#666666" variant="solid" _hover={{ bg: "#a28af5" }} marginTop="5px" >
+      <Button
+        onClick={HandleHome}
+        type="button"
+        color="#fff"
+        variant="solid"
+        colorScheme="orange"
+        marginTop="5px"
+      >
         Go Home
       </Button>
     </Wrapper>

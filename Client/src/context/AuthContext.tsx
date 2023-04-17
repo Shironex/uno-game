@@ -1,7 +1,6 @@
 import { createContext, useContext, ReactNode } from "react";
 import { useUser, useAuth as useClerckAuth } from "@clerk/clerk-react";
-import { Spinner } from "@chakra-ui/react";
-import { InfoWrapper } from "../pages/Live-Games/LiveGameStyle";
+import { AuthWrapper } from "../pages/Live-Games/LiveGameStyle";
 import Loader from "../components/ui/Loader/Loader";
 
 type Props = {
@@ -37,10 +36,10 @@ export const AuthProvider = ({ children }: Props) => {
 
   if (!isLoaded) {
     return (
-      <InfoWrapper>
+      <AuthWrapper>
         <Loader />
         loading Connection...
-      </InfoWrapper>
+      </AuthWrapper>
     );
   }
 

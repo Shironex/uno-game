@@ -6,6 +6,7 @@ import Game from "../pages/Game/Game";
 import ProtectedRoute from "./ProtectedRoute";
 import LiveGames from "../pages/Live-Games/LiveGames";
 import JoinLobby from "../pages/Join-Lobby/JoinLobby";
+import RegisterPage from "../pages/Register/RegisterPage";
 
 const Routers = () => {
   return (
@@ -51,6 +52,16 @@ const Routers = () => {
             <ProtectedRoute>
               <Layout>
                 <CreateLobby />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/register-complete"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <RegisterPage />
               </Layout>
             </ProtectedRoute>
           }

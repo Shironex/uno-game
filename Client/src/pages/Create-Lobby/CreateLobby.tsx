@@ -32,15 +32,24 @@ const CreateLobby = () => {
   function handeLobbyCreate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     SetLoading(true);
-    if (
-      !name.current ||
-      name.current.value == "" ||
-      !numberofplayers.current ||
-      !coins.current
-    ) {
+    if ( !name.current || name.current.value == "" || !numberofplayers.current || !coins.current ) {
       SetLoading(false);
       return;
+    } else if ( !/^[a-zA-Z0-9]{1,20}$/.test(name.current.value) )
+    {
+      SetLoading(false);
+      toast({
+        id: errortoastid,
+        title: "Lobby not created",
+        description: `lobby name can not have special characters!`,
+        status: "error",
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      });
+      return;
     }
+
     setTimeout(() => {
       emit("Create-Game", {
         leader: user!.username,
@@ -53,7 +62,7 @@ const CreateLobby = () => {
         if (!toast.isActive(errortoastid)) {
           toast({
             id: errortoastid,
-            title: "Lobby no created",
+            title: "Lobby not created",
             description: `lobby name exist use other one!`,
             status: "error",
             duration: 2000,
@@ -72,8 +81,8 @@ const CreateLobby = () => {
   return (
     <LobbyLayout>
       <LeftSide>
-        <Title>Set up u Game Lobby</Title>
-        <TitleHint>Use right panel to quickly set up u game lobby</TitleHint>
+        <Title>Set up your Game Lobby</Title>
+        <TitleHint>Use right panel to quickly set up your game lobby</TitleHint>
       </LeftSide>
       <Form onSubmit={handeLobbyCreate}>
         <LabelGroup>

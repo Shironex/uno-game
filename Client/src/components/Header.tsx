@@ -44,17 +44,6 @@ const NavSection = styled.section`
   }
 `;
 
-const Label = styled(Link)`
-  font-size: 16px;
-  text-decoration: none;
-  color: #666666;
-  cursor: pointer;
-
-  &:hover {
-    color: #ffff;
-  }
-`;
-
 
 
 const Header = () => {
@@ -66,12 +55,12 @@ const Header = () => {
       onTabClick: () => navigate("/live-games"),
     },
     {
-      label: "Create Game",
+      label: "Create Lobby",
       onTabClick: () => navigate("/create-lobby"),
     },
     {
       label: "Tournaments",
-      onTabClick: () => navigate("/create-lobby-2"),
+      onTabClick: () => navigate("/register-complete"),
     },
     {
       label: "Leaderboards",
@@ -105,7 +94,7 @@ const Header = () => {
             <UserButton />
           </SignedIn>
           <SignedOut>
-            <SignInButton afterSignUpUrl="/live-games" />
+            <SignInButton   mode="modal"/>
           </SignedOut>
         </NavSection>
       </HeaderWrapper>

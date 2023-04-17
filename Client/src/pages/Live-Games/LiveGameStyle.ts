@@ -6,7 +6,20 @@ export const GameLiveWrapper = styled.div`
 `;
 
 export const InfoWrapper = styled.main`
-  height: 100vh;
+  height: calc(100vh - 132.4px);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #242830;
+  color: #666666;
+  gap: 15px;
+`;
+
+export const AuthWrapper = styled.main`
+  height: 100vh ;
+
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -1,5 +1,6 @@
 import axios from "axios";
-const BASE_URL = "http://localhost:3000/api/v1";
+// const BASE_URL = "http://localhost:3000/api/v1";
+const BASE_URL = "http://uno-game.herokuapp.com:3000/api/v1";
 
 export const axiosPublic = axios.create({
   baseURL: BASE_URL,
@@ -13,14 +14,16 @@ export const AxiosPrivate = axios.create({
 });
 
 interface IProps {
+  id: string;
   email: string;
   firstname: string;
   lastname: string;
   username: string;
 }
 
-export const WinApi = async ({ email, firstname, lastname, username }: IProps) => {
-  const res = await axiosPublic.post("user/win", {
+export const RegisterAPI = async ({ id,email, firstname, lastname, username }: IProps) => {
+  const res = await axiosPublic.post("user/register", {
+    id,
     email,
     firstname,
     lastname,

@@ -6,6 +6,7 @@ import Router from "./routers/Router";
 import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AuthProvider from "./context/AuthContext";
+import { dark } from '@clerk/themes';
 import { ClerkProvider } from "@clerk/clerk-react";
 // Create a client
 const queryClient = new QueryClient();
@@ -17,7 +18,12 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <ChakraProvider>
       <SocketProvider>
         <QueryClientProvider client={queryClient}>
-          <ClerkProvider publishableKey={clerkPubKey}>
+          <ClerkProvider
+            appearance={{
+              baseTheme: dark,
+            }}
+            publishableKey={clerkPubKey}
+          >
             <AuthProvider>
               <Router />
             </AuthProvider>
