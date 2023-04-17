@@ -94,7 +94,7 @@ const Header = () => {
             <UserButton />
           </SignedIn>
           <SignedOut>
-            <SignInButton   mode="modal"/>
+            <SignInButton mode="redirect"/>
           </SignedOut>
         </NavSection>
       </HeaderWrapper>

@@ -35,7 +35,7 @@ const CreateLobby = () => {
     if ( !name.current || name.current.value == "" || !numberofplayers.current || !coins.current ) {
       SetLoading(false);
       return;
-    } else if ( !/^[a-zA-Z0-9]{1,20}$/.test(name.current.value) )
+    } else if ( !/^[a-zA-Z0-9]{5,20}$/.test(name.current.value) )
     {
       SetLoading(false);
       toast({
