@@ -1,4 +1,4 @@
-import express from "express";
+import express, {Request, Response} from "express";
 import http from "http";
 import { Server } from "socket.io";
 import { socketLogic } from "./socket";
@@ -7,6 +7,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import ConnectToDataBase from "./database";
 import colorPrint from "./ColorPrint";
+import path from "path";
+
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
@@ -37,6 +39,10 @@ app.use(express.json());
 app.use("/api/v1/", routes);
 
 app.use(express.static("client/build"));
+
+app.get("*", (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+})
 
 //! Socket Connection
 io.on("connection", socketLogic);
