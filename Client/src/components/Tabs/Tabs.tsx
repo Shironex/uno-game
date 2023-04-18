@@ -13,7 +13,6 @@ interface Props {
 const Tabs = ({ tabs }: Props) => {
   const [activeTab, setActiveTab] = useState(0);
   const path = window.location.pathname;
-  console.log(path.substring(1));
 
   useEffect(() => {
     tabs.forEach(tab => {

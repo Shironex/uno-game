@@ -56,16 +56,6 @@ const Routers = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/register-complete"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <RegisterPage />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
       </Routes>
     </Router>
   );

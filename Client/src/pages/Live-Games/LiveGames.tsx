@@ -24,7 +24,6 @@ const LiveGames = () => {
   const { on, emit, off } = useSocket();
 
   const handleGameboards = (data: Game[]) => {
-    console.log(data);
     SetGames(data);
   };
 

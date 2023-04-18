@@ -16,15 +16,14 @@ const RegisterPlayer = asyncHandler(async (request: Request & IAddPlayerRequest,
   const { id, email, firstname, lastname, username } = request.body;
   console.log(request.body);
 
-  // Does user exist in our database already?
-  //const duplicatePlayer = await Playermodel.findOne({ name: Player }).lean<IPlayer>().exec();
+  //? Does user exist in our database already?
+  const duplicatePlayer = await Playermodel.findOne({ email }).lean<IPlayer>().exec();
 
-  // if (duplicatePlayer) {
-  //   response.status(409).json({ message: "Player Already exist" });
-  //   return;
-  // }
+  if (duplicatePlayer) {
+    response.status(409).json({ message: "Player Already exist" });
+    return;
+  }
 
-  // Password Hash
   const userObject: IPlayer = { 
     clerkid: id,
     email,

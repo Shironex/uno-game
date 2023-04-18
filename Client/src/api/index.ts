@@ -1,6 +1,10 @@
 import axios from "axios";
-// const BASE_URL = "http://localhost:3000/api/v1";
-const BASE_URL = `/api/v1`;
+ const BASE_URL = "http://localhost:3000/api/v1";
+//const BASE_URL = `/api/v1`;
+
+import { AxiosError } from "axios";
+
+export type ApiError = AxiosError<{ message: string }>;
 
 export const axiosPublic = axios.create({
   baseURL: BASE_URL,

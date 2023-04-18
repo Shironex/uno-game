@@ -60,7 +60,7 @@ const Header = () => {
     },
     {
       label: "Tournaments",
-      onTabClick: () => navigate("/register-complete"),
+      onTabClick: () => console.log("test"),
     },
     {
       label: "Leaderboards",
