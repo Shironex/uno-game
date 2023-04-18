@@ -41,7 +41,7 @@ app.use("/api/v1/", routes);
 app.use(express.static("client/build"));
 
 app.get("*", (req: Request, res: Response) => {
-  res.sendFile(path.join("client", "build", "index.html"));
+  res.sendFile("client/build/index.html");
 })
 
 //! Socket Connection
