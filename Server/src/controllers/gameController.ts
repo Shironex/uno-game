@@ -3,6 +3,7 @@ import helpers from "../utils/helpers";
 import { type Game, type Socket, type Io } from "../types/type";
 import errorvalidate, { CustomError } from "../utils/error";
 import colorPrint from "../ColorPrint";
+import axios from 'axios';
 
 type CreateGameData = {
   id: string;
@@ -18,22 +19,18 @@ const API_URL = process.env.API_URL ||  "http://localhost";
 async function removeCoinsFromBalance(id: string, coins: number): Promise<void> {
   try {
     console.log(`${API_URL}:${PORT}/api/v1/user/remove-balance`);
-    const response = await fetch(`${API_URL}:${PORT}/api/v1/user/remove-balance`, {
-      method: 'POST',
-      body: JSON.stringify({ id, coins }),
-      headers: { 'Content-Type': 'application/json' }
-    });
+    const response = await axios.post(`${API_URL}:${PORT}/api/v1/user/remove-balance`, { id, coins });
 
-    if (!response.ok) {
-      switch (response.status) {
-        case 404:
-          throw new CustomError(errorvalidate.PLAYER_NOT_EXIST.code, errorvalidate.PLAYER_NOT_EXIST.message )
-        case 409:
-          throw new CustomError(errorvalidate.NOT_ENOUGH_COINS.code, errorvalidate.NOT_ENOUGH_COINS.message )
-        case 500:
-          throw new CustomError(errorvalidate.INTERNAL_SERVER_ERROR.code, errorvalidate.INTERNAL_SERVER_ERROR.message )
+    if (!response.data.success) {
+      switch (response.data.errorCode) {
+        case errorvalidate.PLAYER_NOT_EXIST.code:
+          throw new CustomError(errorvalidate.PLAYER_NOT_EXIST.code, errorvalidate.PLAYER_NOT_EXIST.message );
+        case errorvalidate.NOT_ENOUGH_COINS.code:
+          throw new CustomError(errorvalidate.NOT_ENOUGH_COINS.code, errorvalidate.NOT_ENOUGH_COINS.message );
+        case errorvalidate.INTERNAL_SERVER_ERROR.code:
+          throw new CustomError(errorvalidate.INTERNAL_SERVER_ERROR.code, errorvalidate.INTERNAL_SERVER_ERROR.message );
         default:
-          throw new CustomError(errorvalidate.INTERNAL_SERVER_ERROR.code, errorvalidate.INTERNAL_SERVER_ERROR.message )
+          throw new CustomError(errorvalidate.INTERNAL_SERVER_ERROR.code, errorvalidate.INTERNAL_SERVER_ERROR.message );
       }
     }
   } catch (error) {
@@ -44,20 +41,16 @@ async function removeCoinsFromBalance(id: string, coins: number): Promise<void> 
 
 async function AddCoinsToBalance(id: string, coins: number): Promise<void> {
   try {
-    const response = await fetch(`${API_URL}:${PORT}/api/v1/user/add-balance`, {
-      method: 'POST',
-      body: JSON.stringify({ id, coins }),
-      headers: { 'Content-Type': 'application/json' }
-    });
+    const response = await axios.post(`${API_URL}:${PORT}/api/v1/user/add-balance`, { id, coins });
 
-    if (!response.ok) {
-      switch (response.status) {
-        case 404:
-          throw new CustomError(errorvalidate.PLAYER_NOT_FOUND.code, errorvalidate.PLAYER_NOT_FOUND.message )
-        case 500:
-          throw new CustomError(errorvalidate.INTERNAL_SERVER_ERROR.code, errorvalidate.INTERNAL_SERVER_ERROR.message )
+    if (!response.data.success) {
+      switch (response.data.errorCode) {
+        case errorvalidate.PLAYER_NOT_FOUND.code:
+          throw new CustomError(errorvalidate.PLAYER_NOT_FOUND.code, errorvalidate.PLAYER_NOT_FOUND.message );
+        case errorvalidate.INTERNAL_SERVER_ERROR.code:
+          throw new CustomError(errorvalidate.INTERNAL_SERVER_ERROR.code, errorvalidate.INTERNAL_SERVER_ERROR.message );
         default:
-          throw new CustomError(errorvalidate.INTERNAL_SERVER_ERROR.code, errorvalidate.INTERNAL_SERVER_ERROR.message )
+          throw new CustomError(errorvalidate.INTERNAL_SERVER_ERROR.code, errorvalidate.INTERNAL_SERVER_ERROR.message );
       }
     }
   } catch (error) {
