@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Label,
   LabelGroup,
@@ -24,26 +24,43 @@ const CreateLobby = () => {
   const numberofplayers = useRef<HTMLInputElement | null>(null);
   const coins = useRef<HTMLInputElement | null>(null);
   const { emit, on } = useSocket();
-  const { user } = useAuth();
+  const user = useAuth().user;
   const navigate = useNavigate();
   const toast = useToast();
-  const errortoastid = "Lobby no created";
+  const errortoastid = "Game not created";
+
+
 
   function handeLobbyCreate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     SetLoading(true);
-    if ( !name.current || name.current.value == "" || !numberofplayers.current || !coins.current ) {
+    if (!name.current || name.current.value == "" || !numberofplayers.current || !coins.current) 
+    {
       SetLoading(false);
       return;
-    } else if ( !/^[a-zA-Z0-9]{5,20}$/.test(name.current.value) )
+    } else 
+    if (!/^[a-zA-Z0-9]{4,20}$/.test(name.current.value)) {
+      SetLoading(false);
+      toast({
+        id: errortoastid,
+        title: errortoastid,
+        description: `lobby name must be minimum of 4 characters and can not have special characters!`,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top",
+      });
+      return;
+    }
+    if (Number(coins.current.value) > user!.coins )
     {
       SetLoading(false);
       toast({
         id: errortoastid,
-        title: "Lobby not created",
-        description: `lobby name can not have special characters!`,
+        title: errortoastid,
+        description: `U dont have enough coins to create this game u have ${user?.coins} and u need ${coins.current.value}`,
         status: "error",
-        duration: 2000,
+        duration: 3000,
         isClosable: true,
         position: "top",
       });
@@ -52,28 +69,29 @@ const CreateLobby = () => {
 
     setTimeout(() => {
       emit("Create-Game", {
+        id: user!.id,
         leader: user!.username,
         name: name.current!.value,
         maxplayers: numberofplayers.current!.value,
         coins: coins.current!.value,
       });
-      on("Game-Exist", () => {
+      on("Server Error", (data: {code: string, message: string}) => {
         SetLoading(false);
-        if (!toast.isActive(errortoastid)) {
+        if (!toast.isActive(data.code)) {
           toast({
-            id: errortoastid,
-            title: "Lobby not created",
-            description: `lobby name exist use other one!`,
+            id: data.code,
+            title: data.code,
+            description: data.message,
             status: "error",
-            duration: 2000,
+            duration: 3500,
             isClosable: true,
             position: "top",
           });
         }
       });
-      on("Game-Created", (name: string) => {
+      on("Game-Created", (Name: string) => {
         SetLoading(false);
-        navigate(`/lobby/${name}`);
+        navigate(`/lobby/${Name}`);
       });
     }, 1000);
   }
@@ -120,7 +138,7 @@ const CreateLobby = () => {
 
         <LabelGroup>
           <TbBrandCoinbase />
-          <Label>Coins to win</Label>
+          <Label>Coins bet from each player</Label>
         </LabelGroup>
         <NumberInput
           ref={coins}
@@ -136,10 +154,11 @@ const CreateLobby = () => {
           required={true}
         />
 
-        <TitleHint>U can create game with max 500 coins </TitleHint>
         <TitleHint>
-          If lose u will lose 1/2 1/4 1/3 Coins to win depend of number of
-          players
+          Minimum amount is <span style={{color: "white"}}>100</span> and maximum is <span style={{color: "white"}}>500</span>
+        </TitleHint>
+        <TitleHint>
+          All players pay same amount of coins, player who win take them all
         </TitleHint>
         <Button
           type="submit"

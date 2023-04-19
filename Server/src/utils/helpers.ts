@@ -1,4 +1,5 @@
 import { Server, Socket } from "socket.io";
+import constants from "./constants";
 import { type Card, type Game, type GameSummary } from "types/type";
 
 export default {
@@ -20,13 +21,26 @@ export default {
       };
     });
   },
-  findGameByName: (name: string, gameBoard: Game[]) =>
-    gameBoard.find((game) => game.name === name),
+  excludeIdFromPlayers(game: Game): Game {
+    const playersSummary = game.players.map(({ name, deck }) => ({ name, deck,}));
+    return {
+      ...game,
+      players: playersSummary,
+    };
+  },
+  findGameByName: (name: string) => {
+    return constants.GameBoard.find((game) => game.name === name)
+  },
+  findGameById: (id: number) => {
+    return constants.GameBoard.find((game) => game.id === id)
+  },
+  IsUserInGame: (game: Game, username: string) => {
+    return game.players.some((player) => player.name === username);
+  },
   findRoomByName: (io: Server, name: string) => {
     return io.sockets.adapter.rooms.get(name);
   },
-  findSocketInRoom: (io: Server, socket: Socket, name: string) =>
-  {
+  findSocketInRoom: (io: Server, socket: Socket, name: string) => {
     const room = io.sockets.adapter.rooms.get(name);
     if (room && room.has(socket.id)) {
       return true;
@@ -35,21 +49,18 @@ export default {
   },
   RemoveSocketInRoom: (io: Server, name: string) => {
     const room = io.sockets.adapter.rooms.get(name);
-    if (room)
-    {
+    if (room) {
       room.forEach((socketPlayer) => {
         const player = io.sockets.sockets.get(socketPlayer);
-        if (player)
-        {
+        if (player) {
           player.leave(name);
         }
-        const deletedRoom = io.sockets.adapter.rooms.delete(name);
-        console.log(deletedRoom);
-      })
+        io.sockets.adapter.rooms.delete(name);
+      });
     }
   },
   JoinRoomByName: (io: Server, socket: Socket, name: string) => {
-    const allRooms = io.sockets.adapter.rooms.get(name);
+    //TODO Refactor code to remove this function or remake it a bit
     return socket.join(name);
   },
   shuffleArray: <T>(array: T[]): T[] => {
@@ -76,19 +87,15 @@ export default {
     );
   },
   isValidCard: (card: string, topCard: Card) => {
+    const color = card[card.length - 1];
+    const value = card.substring(0, card.length - 1);
 
-      const color = card[card.length - 1];
-      const value = card.substring(0, card.length - 1);
-    
-      const topColor = topCard.color || topCard.src[topCard.src.length - 1];
-      const topValue = topCard.src.substring(0, topCard.src.length - 1);
-      if (color === topColor || value === topValue)
-      {
-        return true;
-      }
-      else
-      {
-        return false;
-      }
-  }
+    const topColor = topCard.color || topCard.src[topCard.src.length - 1];
+    const topValue = topCard.src.substring(0, topCard.src.length - 1);
+    if (color === topColor || value === topValue) {
+      return true;
+    } else {
+      return false;
+    }
+  },
 };

@@ -15,6 +15,7 @@ import {
 import PlayerSection from "./PlayerSection";
 import PileSection from "./PileSection";
 import WaitingPage from "../Waiting-Lobby/WaitingPage";
+import { useAuth } from "../../context/AuthContext";
 
 const Game = () => {
   const navigate = useNavigate();
@@ -22,7 +23,9 @@ const Game = () => {
   const { on, off, emit } = useSocket();
   const { search } = useLocation();
   const toast = useToast();
+  const toastGameEndedId = "Game Ended";
   const toastCardPlacedId = "Auto Placed";
+  const refetchBalance = useAuth().refetchBalance;
 
   const playerName = new URLSearchParams(search).get("playerName");
   const [gameSetup, setGameSetup] = useState<Game | null>(null);
@@ -38,6 +41,7 @@ const Game = () => {
     }
 
     on("Get-Game-Data", (data: Game) => {
+      console.log("Data", data)
       setGameSetup(data);
       //? Indicate for creator that game got created successfully
       if (gameSetup && gameSetup.status == "Waiting To Start" && playerName == null) {
@@ -50,8 +54,10 @@ const Game = () => {
           position: "top",
         });
       }
+
       if (data && data.status == "Currently Live" && data.started == false) {
         const players = [...data.players];
+        console.log(players);
         const bottomPlayer = playerName ? playerName : data.leader;
         const currentPlayer = players.find(
           (player) => player.name === bottomPlayer
@@ -71,6 +77,7 @@ const Game = () => {
               rotatedPositions[rotatedPositions.length - index - 1];
           });
         }
+
         setGameSetup({
           ...data,
           players: players,
@@ -117,32 +124,56 @@ const Game = () => {
       emit("Get-Game-Info", id);
     });
 
-    on("Player-Won", (name: string) => {
-      toast({
-        title: "Game Ended",
-        description: `${name} have won Game!`,
-        status: "info",
-        duration: 3000,
-        isClosable: false,
-        position: "top",
-      });
+    on("Player-Lose", (name: string) => {
+      if (!toast.isActive(toastGameEndedId))
+      {
+        toast({
+          id: toastGameEndedId,
+          title: toastGameEndedId,
+          description: `${name} have won Game!`,
+          status: "info",
+          duration: 3000,
+          isClosable: false,
+          position: "top",
+        });
+      }
+      refetchBalance();
       setTimeout(() => {
         navigate("/");
       }, 3500);
     });
 
-    on("Player-Gift", () => {
-      toast({
-        title: "Game Ended",
-        description: `U won The Game!`,
-        status: "info",
-        duration: 3000,
-        isClosable: false,
-        position: "top",
-      });
+    on("Player-Win", () => {
+      if (!toast.isActive(toastGameEndedId))
+      {
+        toast({
+          id: toastGameEndedId,
+          title: toastGameEndedId,
+          description: `U win The Game!`,
+          status: "info",
+          duration: 3000,
+          isClosable: false,
+          position: "top",
+        });
+      }
+      refetchBalance();
       setTimeout(() => {
         navigate("/");
       }, 3500);
+    });
+
+    on("Server Error", (data: {code: string, message: string}) => {
+      if (!toast.isActive(data.code)) {
+        toast({
+          id: data.code,
+          title: data.code,
+          description: data.message,
+          status: "error",
+          duration: 3500,
+          isClosable: true,
+          position: "top",
+        });
+      }
     });
 
     on("Player-Played-Card", (data: PlaceCardData) => {
@@ -185,9 +216,11 @@ const Game = () => {
       off("Player-Played-Card");
       off("Player-Won");
     };
-  }, [id]);
+  }, [id, gameSetup]);
 
   if (gameSetup && (gameSetup.status == "Waiting To Start" || !gameSetup.started)) {
+    //TODO Fix bug when waiting page not appear randomly
+    //? !gamesetup or players < max players to add
     return <WaitingPage lobbyname={gameSetup.name} numberOfPlayers={gameSetup.players.length} maxplayers={gameSetup.maxplayers} />;
   }
 

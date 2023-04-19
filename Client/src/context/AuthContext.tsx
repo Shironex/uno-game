@@ -8,8 +8,8 @@ import {
 import { useUser, useAuth as useClerckAuth } from "@clerk/clerk-react";
 import { AuthWrapper } from "../pages/Live-Games/LiveGameStyle";
 import Loader from "../components/ui/Loader/Loader";
-import { ApiError, RegisterAPI } from "../api";
-import { useMutation } from "@tanstack/react-query";
+import { ApiError, BalanceAPI, RegisterAPI } from "../api";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useToast } from "@chakra-ui/react";
 import Cookies from "universal-cookie";
 
@@ -23,16 +23,19 @@ type User = {
   lastName: string;
   username: string;
   email: string;
+  coins: number;
 };
 
 type AuthContextType = {
   user: User | undefined;
   isSignedIn: boolean;
+  refetchBalance: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType>({
   user: undefined,
   isSignedIn: false,
+  refetchBalance: () => Promise.resolve()
 });
 
 export const useAuth = () => {
@@ -40,7 +43,6 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: Props) => {
-  
   const [userObject, setUserObject] = useState<User | undefined>();
   const { isLoaded, isSignedIn } = useClerckAuth();
   const { user } = useUser();
@@ -68,17 +70,19 @@ export const AuthProvider = ({ children }: Props) => {
         path: "/",
         sameSite: "strict",
       });
+      BalanceQuery.refetch();
     },
     onError: (error: ApiError) => {
-      if ( error.response?.status == 409 && error.response?.data.message == "Player Already exist") 
-      {
+      if (
+        error.response?.status == 409 &&
+        error.response?.data.message == "Player Already exist"
+      ) {
         cookies.set("Registered", true, {
           maxAge: 60 * 60 * 24 * 7,
           path: "/",
           sameSite: "strict",
         });
-      } else
-      {
+      } else {
         toast({
           id: RegisterErrorId,
           title: "Register Error",
@@ -92,24 +96,35 @@ export const AuthProvider = ({ children }: Props) => {
       }
     },
   });
+  const BalanceQuery = useQuery({
+    queryKey: ["Balance", user?.id],
+    queryFn: () => {
+      return BalanceAPI(user!.id);
+    },
+    enabled: false,
+    onSuccess: (coins: number) => {
+      setUserObject((prevvalue) => ({
+        ...prevvalue!,
+        coins: coins
+      }));
+    },
+    onError: (error: ApiError) => {
+      console.log(error);
+    },
+  });
+
+  const refetchBalance = async () => {
+    await BalanceQuery.refetch();
+  };
 
   useEffect(() => {
     if (!isLoaded) {
       return;
     }
-    if (isLoaded && !isSignedIn)
-    {
+    if (isLoaded && !isSignedIn) {
       cookies.remove("Registered");
     }
     if (isLoaded && isSignedIn && user) {
-      setUserObject( {
-        id: user.id,
-        firstName: user.firstName!,
-        lastName: user.lastName!,
-        username: user.username!,
-        email: user.primaryEmailAddress?.emailAddress!,
-      });
-
       if (!RegisterCookie) {
         mutate({
           id: user!.id,
@@ -119,10 +134,17 @@ export const AuthProvider = ({ children }: Props) => {
           username: user.username!,
         });
       }
+      setUserObject({
+        id: user.id,
+        firstName: user.firstName!,
+        lastName: user.lastName!,
+        username: user.username!,
+        email: user.primaryEmailAddress?.emailAddress!,
+        coins: 0,
+      });
+      BalanceQuery.refetch();
     }
-    return () => {
-
-    };
+    return () => {};
   }, [isLoaded, isSignedIn, user]);
 
   if (!isLoaded) {
@@ -135,7 +157,7 @@ export const AuthProvider = ({ children }: Props) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user: userObject, isSignedIn }}>
+    <AuthContext.Provider value={{ user: userObject, isSignedIn, refetchBalance: refetchBalance }}>
       {children}
     </AuthContext.Provider>
   );

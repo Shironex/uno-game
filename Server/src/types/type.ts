@@ -6,6 +6,7 @@ export interface Game {
   leader: string;
   coins: number;
   players: {
+    id?: string;
     name: string;
     deck?: { src: string }[];
   }[];

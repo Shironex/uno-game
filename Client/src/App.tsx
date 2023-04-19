@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Layout } from './styles/Layout';
-import Header from './components/Header';
+import Header from './components/Header/Header';
 
 
 

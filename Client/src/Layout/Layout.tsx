@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import { Layout as MainLayout } from "../styles/Layout";
-import Header from "../components/Header";
+import Header from "../components/Header/Header";
 
 type Props = {
     children: ReactNode

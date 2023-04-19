@@ -25,6 +25,7 @@ const WaitingPage = ({ lobbyname, numberOfPlayers, maxplayers }: Props) => {
 
   async function copyToClipboard(text: string) {
     const gamelink = `http://uno-game.herokuapp.com/join/${text}`
+    //const gamelink = `http:/:5173/join/${text}`
     try {
       await navigator.clipboard.writeText(gamelink);
       setCopySuccess("Copied!");

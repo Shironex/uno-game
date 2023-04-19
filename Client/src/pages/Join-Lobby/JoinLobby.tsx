@@ -26,8 +26,9 @@ const JoinLobby = () => {
   const errotoastid = "Lobby join error";
 
   useEffect(() => {
-    console.log("Test");
+    
     emit("Join-Game", {
+      id: user!.id,
       username: user!.username,
       lobby: id,
     });

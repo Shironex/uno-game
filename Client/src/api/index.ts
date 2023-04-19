@@ -35,3 +35,16 @@ export const RegisterAPI = async ({ id,email, firstname, lastname, username }: I
   });
   return res.data;
 };
+
+export const BalanceAPI = async (id: string) => {
+  const res = await axiosPublic.get(`user/check-balance/${id}`);
+  return res.data;
+};
+
+export const RemoveBalanceAPI = async ({ id, coins }: {id: string,coins: number}) => {
+  const res = await axiosPublic.post("user/remove-balance", {
+    id,
+    coins
+  });
+  return res.data;
+};
