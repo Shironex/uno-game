@@ -13,13 +13,12 @@ type CreateGameData = {
   coins: number;
 };
 
-const PORT = process.env.PORT || 3000;
 const API_URL = process.env.API_URL ||  "http://localhost";
 
 async function removeCoinsFromBalance(id: string, coins: number): Promise<void> {
   try {
-    console.log(`${API_URL}:${PORT}/api/v1/user/remove-balance`);
-    const response = await axios.post(`${API_URL}:${PORT}/api/v1/user/remove-balance`, { id, coins });
+    console.log(`${API_URL}/api/v1/user/remove-balance`);
+    const response = await axios.post(`${API_URL}/api/v1/user/remove-balance`, { id, coins });
 
     if (!response.data.success) {
       switch (response.data.errorCode) {
@@ -41,7 +40,7 @@ async function removeCoinsFromBalance(id: string, coins: number): Promise<void> 
 
 async function AddCoinsToBalance(id: string, coins: number): Promise<void> {
   try {
-    const response = await axios.post(`${API_URL}:${PORT}/api/v1/user/add-balance`, { id, coins });
+    const response = await axios.post(`${API_URL}/api/v1/user/add-balance`, { id, coins });
 
     if (!response.data.success) {
       switch (response.data.errorCode) {
