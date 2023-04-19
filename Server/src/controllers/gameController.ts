@@ -20,7 +20,7 @@ async function removeCoinsFromBalance(id: string, coins: number): Promise<void> 
     console.log(`${API_URL}/api/v1/user/remove-balance`);
     const response = await axios.post(`${API_URL}/api/v1/user/remove-balance`, { id, coins });
 
-    if (!response.data.success) {
+    if (!response.data.message) {
       switch (response.data.errorCode) {
         case errorvalidate.PLAYER_NOT_EXIST.code:
           throw new CustomError(errorvalidate.PLAYER_NOT_EXIST.code, errorvalidate.PLAYER_NOT_EXIST.message );
@@ -42,7 +42,7 @@ async function AddCoinsToBalance(id: string, coins: number): Promise<void> {
   try {
     const response = await axios.post(`${API_URL}/api/v1/user/add-balance`, { id, coins });
 
-    if (!response.data.success) {
+    if (!response.data.message) {
       switch (response.data.errorCode) {
         case errorvalidate.PLAYER_NOT_FOUND.code:
           throw new CustomError(errorvalidate.PLAYER_NOT_FOUND.code, errorvalidate.PLAYER_NOT_FOUND.message );
