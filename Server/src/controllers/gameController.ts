@@ -13,7 +13,7 @@ type CreateGameData = {
 };
 
 const PORT = process.env.PORT || 3000;
-const API_URL = process.env.API_URL ||  "localhost";
+const API_URL = process.env.API_URL ||  "http://localhost";
 
 async function removeCoinsFromBalance(id: string, coins: number): Promise<void> {
   try {
