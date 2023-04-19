@@ -12,9 +12,12 @@ type CreateGameData = {
   coins: number;
 };
 
+const PORT = process.env.PORT || 3000;
+const API_URL = process.env.API_URL ||  "localhost";
+
 async function removeCoinsFromBalance(id: string, coins: number): Promise<void> {
   try {
-    const response = await fetch(`/api/v1/user/remove-balance`, {
+    const response = await fetch(`${API_URL}:${PORT}/api/v1/user/remove-balance`, {
       method: 'POST',
       body: JSON.stringify({ id, coins }),
       headers: { 'Content-Type': 'application/json' }
@@ -40,7 +43,7 @@ async function removeCoinsFromBalance(id: string, coins: number): Promise<void> 
 
 async function AddCoinsToBalance(id: string, coins: number): Promise<void> {
   try {
-    const response = await fetch(`api/v1/user/add-balance`, {
+    const response = await fetch(`${API_URL}:${PORT}/api/v1/user/add-balance`, {
       method: 'POST',
       body: JSON.stringify({ id, coins }),
       headers: { 'Content-Type': 'application/json' }
