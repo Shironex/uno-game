@@ -17,6 +17,7 @@ const API_URL = process.env.API_URL ||  "http://localhost";
 
 async function removeCoinsFromBalance(id: string, coins: number): Promise<void> {
   try {
+    console.log(`${API_URL}:${PORT}/api/v1/user/remove-balance`);
     const response = await fetch(`${API_URL}:${PORT}/api/v1/user/remove-balance`, {
       method: 'POST',
       body: JSON.stringify({ id, coins }),
