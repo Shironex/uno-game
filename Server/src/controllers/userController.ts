@@ -93,7 +93,7 @@ export const RemovePlayerBalance  = asyncHandler(
 
     if (updatedPlayer)
     {
-       response.sendStatus(200);
+      response.status(200).json({ message: "Balance updated successfully" });
     }
     else
     {
@@ -125,7 +125,7 @@ export const AddPlayerBalance  = asyncHandler(
 
     if (updatedPlayer)
     {
-       response.sendStatus(200);
+      response.status(200).json({ message: "Balance updated successfully" });
     }
     else
     {
