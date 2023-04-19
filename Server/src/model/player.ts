@@ -9,7 +9,7 @@ const playerSchema = new Schema({
   username: { type: String, unique: true, required: true },
   gameswon: { type: Number, default: 0 },
   gameslost: { type: Number, default: 0 },
-  coins: { type: Number, default: 250 },
+  coins: { type: Number, default: 1000 },
 });
 
 export interface IPlayer {
