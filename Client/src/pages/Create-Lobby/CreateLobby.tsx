@@ -148,14 +148,14 @@ const CreateLobby = () => {
           placeholderText="Name"
           width="300px"
           height="50px"
-          min={100}
-          max={500}
+          min={10}
+          max={10000}
           mainvalue={100}
           required={true}
         />
 
         <TitleHint>
-          Minimum amount is <span style={{color: "white"}}>100</span> and maximum is <span style={{color: "white"}}>500</span>
+          Minimum amount is <span style={{color: "white"}}>10</span> and maximum is <span style={{color: "white"}}>1000</span>
         </TitleHint>
         <TitleHint>
           All players pay same amount of coins, player who win take them all

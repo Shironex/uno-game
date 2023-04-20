@@ -15,7 +15,6 @@ interface IAddPlayerRequest {
 export const RegisterPlayer = asyncHandler(
   async (request: Request & IAddPlayerRequest, response: Response) => {
     const { id, email, firstname, lastname, username } = request.body;
-    //console.log(request.body);
 
     //* Does user exist in our database already?
     const duplicatePlayer = await Playermodel.findOne({ email }).lean().exec();
@@ -89,7 +88,6 @@ export const RemovePlayerBalance  = asyncHandler(
       { new: true } // return the updated document
     ).exec();
 
-    //console.log(updatedPlayer);
 
     if (updatedPlayer)
     {
@@ -121,7 +119,6 @@ export const AddPlayerBalance  = asyncHandler(
       { new: true } // return the updated document
     ).exec();
 
-    //console.log(updatedPlayer);
 
     if (updatedPlayer)
     {

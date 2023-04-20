@@ -21,18 +21,10 @@ type Props = {
 };
 
 const WaitingPage = ({ lobbyname, numberOfPlayers, maxplayers }: Props) => {
-  const [copySuccess, setCopySuccess] = useState("");
+  const gamelink = `http://uno-game.herokuapp.com/join/${lobbyname}`;
+  //const gamelink = `http://localhost:5173/join/${lobbyname}`
 
-  async function copyToClipboard(text: string) {
-    const gamelink = `http://uno-game.herokuapp.com/join/${text}`
-    //const gamelink = `http:/:5173/join/${text}`
-    try {
-      await navigator.clipboard.writeText(gamelink);
-      setCopySuccess("Copied!");
-    } catch (err) {
-      setCopySuccess("Failed to copy!");
-    }
-  }
+
   return (
     <Layout>
       <Loader />
@@ -40,14 +32,12 @@ const WaitingPage = ({ lobbyname, numberOfPlayers, maxplayers }: Props) => {
       <label>
         {numberOfPlayers} / {maxplayers} have joined
       </label>
-      <Button
-        onClick={() => copyToClipboard(lobbyname)}
-        size="sm"
-        colorScheme="orange"
-        disabled={true}
-      >
-        {copySuccess ? copySuccess : "Copy Invite Link"}
-      </Button>
+      <label>
+        Link to join game for other players
+      </label>
+      <label>
+        {gamelink}
+      </label>
     </Layout>
   );
 };

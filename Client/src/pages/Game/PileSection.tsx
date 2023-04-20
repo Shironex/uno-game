@@ -71,7 +71,7 @@ const PileSection = ({ gameSetup, currentPlayer, selectedCard, uno, SetUNO, isCo
 
   return (
     <Section>
-      {gameSetup && gameSetup.players.map((player) => {
+      {gameSetup && gameSetup.players.map((player, index) => {
           const playerTurn = currentPlayer == gameSetup.currentPlayerTurn;
           const lastThreeCards = gameSetup.discardPile.slice( gameSetup.discardPile.length - 4, gameSetup.discardPile.length);
           const latestDiscardedCard = gameSetup.discardPile[gameSetup.discardPile.length - 1]!.src;
@@ -79,14 +79,14 @@ const PileSection = ({ gameSetup, currentPlayer, selectedCard, uno, SetUNO, isCo
 
           if (currentPlayer == player.name) {
             return (
-              <CardSection>
+              <CardSection key={index}>
                 <CardImage
                   src={CardsBack}
                   isHoverable={playerTurn}
                   onClick={() => handleCardClick(player, "BackCard"!)}
                 />
                 <label>
-                  Player Turn:{" "}
+                  Player Turn:
                   <span style={{ display: "block", textAlign: "center" }}>
                     {gameSetup.currentPlayerTurn}
                   </span>
@@ -98,9 +98,7 @@ const PileSection = ({ gameSetup, currentPlayer, selectedCard, uno, SetUNO, isCo
                         <CardistackIMG
                           className={index === 3 ? "first" : ""}
                           src={imagecards[card.src]}
-                          onClick={() =>
-                            console.log("discard Pile:", gameSetup.discardPile)
-                          }
+                          key={index}
                           haveChangedColor={ChangedColor}
                           CanRotate={gameSetup.discardPile.length > 3}
                         />
@@ -111,9 +109,6 @@ const PileSection = ({ gameSetup, currentPlayer, selectedCard, uno, SetUNO, isCo
                   <CardImage
                     src={imagecards[latestDiscardedCard]}
                     isHoverable={false}
-                    onClick={() =>
-                      console.log("discard Pile:", gameSetup.discardPile)
-                    }
                     haveChangedColor={ChangedColor}
                   />
                 )}
@@ -126,7 +121,7 @@ const PileSection = ({ gameSetup, currentPlayer, selectedCard, uno, SetUNO, isCo
             );
           } else {
             return (
-              <PlayerSection position={player.position!}>
+              <PlayerSection key={index} position={player.position!}>
                 {player.name}
               </PlayerSection>
             );

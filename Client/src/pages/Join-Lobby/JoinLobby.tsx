@@ -18,54 +18,50 @@ const Layout = styled.main`
 `;
 
 const JoinLobby = () => {
-  const { id } = useParams();
+  const { gamename } = useParams();
   const { user } = useAuth();
   const { emit, on, off } = useSocket();
   const navigate = useNavigate();
   const toast = useToast();
-  const errotoastid = "Lobby join error";
-
+  
   useEffect(() => {
-    
-    emit("Join-Game", {
-      id: user!.id,
-      username: user!.username,
-      lobby: id,
+    if (gamename && user)
+    {
+      emit("Join-Game", {
+        id: user.id,
+        username: user.username,
+        lobby: gamename,
+      });
+    }
+
+    on("Game-User-Join", () => {
+      navigate(`/lobby/${gamename}?playerName=${user!.username}`);
     });
 
-    const handleUserExist = () => {
-      if (!toast.isActive(errotoastid))
-      {
+    on("Server Error", (data: {code: string, message: string}) => {
+      if (!toast.isActive(data.code)) {
         toast({
-          id: errotoastid,
-          title: "Lobby join error",
-          description: `There is already user with u socket id`,
+          id: data.code,
+          title: data.code,
+          description: data.message,
           status: "error",
-          duration: 2000,
+          duration: 3500,
           isClosable: true,
           position: "top",
         });
       }
-    };
+    }); 
 
-    const handleUserJoin = () => {
-      navigate(`/lobby/${id}?playerName=${user!.username}`);
-    };
-
-    on("Game-User-Exist", handleUserExist);
-    on("Game-User-Join", handleUserJoin);
-
-    // cleanup function
     return () => {
-      off("Game-User-Exist");
       off("Game-User-Join");
+      off("Server Error");
     };
-  }, []);
+  }, [gamename, user]);
 
   return (
     <Layout>
       <Loader />
-      <label>Joining {id} Lobby</label>
+      <label>Joining {gamename? gamename : "undefined"} Lobby</label>
       <label>Please wait...</label>
     </Layout>
   );

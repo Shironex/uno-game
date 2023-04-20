@@ -13,11 +13,10 @@ type CreateGameData = {
   coins: number;
 };
 
-const API_URL = process.env.API_URL ||  "http://localhost";
+const API_URL = process.env.API_URL ||  "http://localhost:3000";
 
 async function removeCoinsFromBalance(id: string, coins: number): Promise<void> {
   try {
-    console.log(`${API_URL}/api/v1/user/remove-balance`);
     const response = await axios.post(`${API_URL}/api/v1/user/remove-balance`, { id, coins });
 
     if (!response.data.message) {
@@ -98,9 +97,7 @@ export const createGame = async (socket: Socket, io: Io, data: CreateGameData) =
       //* Emit the updated GameBoard to all the clients
       io.emit("Game-List", helpers.getGameSummaries(constants.GameBoard));
 
-      const GameData = helpers.excludeIdFromPlayers(Game);
-
-      socket.emit("Get-Game-Data", GameData);
+      
     } catch (error) {
       socket.emit('Server Error', {code: error.code, message: error.message});
     }
@@ -116,7 +113,6 @@ type JoinGameData = {
 
 export const JoinGame = async (socket: Socket, io: Io, data: JoinGameData) => {
   const { username, lobby } = data;
-
   //* Join Game Lobby
   const GameLobby = `game-${lobby}`;
   const FindSocketInRoom = helpers.findSocketInRoom(io, socket, GameLobby);
@@ -399,7 +395,7 @@ export const DrawCard = (socket: Socket, io: Io, data: DrawCardData) => {
   //* If plauer draw card and it have valid number or color and its not wild or spacial card auto place it 
   const TopCard = game.discardPile[game.discardPile.length - 1];
   const NewCard = currentPlayer.deck[currentPlayer.deck.length - 1];
-
+  
   if ( !helpers.isSpecialCard(NewCard.src) && helpers.isValidCard(NewCard.src, TopCard)) 
   {
     game.discardPile = [...game.discardPile, currentPlayer.deck.pop()];

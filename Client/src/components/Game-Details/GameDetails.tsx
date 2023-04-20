@@ -27,7 +27,6 @@ const GameDetails = ({ Game }: Props) => {
   const { user } = useAuth();
   const { emit, on, off } = useSocket();
   const toast = useToast();
-  const errotoastid = "Lobby join error";
 
   const handleTabClick = (tabIndex: number) => {
     setActiveTab(tabIndex);
@@ -36,6 +35,17 @@ const GameDetails = ({ Game }: Props) => {
   const handleJoingGame = () => {
     if (user!.coins < Game.coins)
     {
+      if (!toast.isActive("NOT_ENOUGH_COINS")) {
+        toast({
+          id: "NOT_ENOUGH_COINS",
+          title: "NOT_ENOUGH_COINS",
+          description: "You do not have enough coins to create a game.",
+          status: "error",
+          duration: 3500,
+          isClosable: true,
+          position: "top",
+        });
+      }
       setLoading(false);
       return;
     }
@@ -47,15 +57,14 @@ const GameDetails = ({ Game }: Props) => {
   }
 
   useEffect(() => {
-    on("Game-User-Exist", () => {
-      if (!toast.isActive(errotoastid))
-      {
+    on("Server Error", (data: {code: string, message: string}) => {
+      if (!toast.isActive(data.code)) {
         toast({
-          id: errotoastid,
-          title: errotoastid,
-          description: `There is already user with u socket id`,
+          id: data.code,
+          title: data.code,
+          description: data.message,
           status: "error",
-          duration: 2000,
+          duration: 3500,
           isClosable: true,
           position: "top",
         });
@@ -69,7 +78,7 @@ const GameDetails = ({ Game }: Props) => {
 
     // cleanup function
     return () => {
-      off("Game-User-Exist");
+      off("Server Error");
       off("Game-User-Join");
     };
   }, []);

@@ -36,12 +36,11 @@ const Game = () => {
 
   useEffect(() => {
     //? Request Game Data for User that Join
-    if (playerName && gameSetup == null) {
+    if (gameSetup == null) {
       emit("Get-Game-Info", id);
     }
 
     on("Get-Game-Data", (data: Game) => {
-      console.log("Data", data)
       setGameSetup(data);
       //? Indicate for creator that game got created successfully
       if (gameSetup && gameSetup.status == "Waiting To Start" && playerName == null) {
@@ -57,7 +56,6 @@ const Game = () => {
 
       if (data && data.status == "Currently Live" && data.started == false) {
         const players = [...data.players];
-        console.log(players);
         const bottomPlayer = playerName ? playerName : data.leader;
         const currentPlayer = players.find(
           (player) => player.name === bottomPlayer
@@ -218,7 +216,7 @@ const Game = () => {
     };
   }, [id, gameSetup]);
 
-  if (gameSetup && (gameSetup.status == "Waiting To Start" || !gameSetup.started)) {
+  if (gameSetup && (gameSetup.status == "Waiting To Start" || !gameSetup.started || gameSetup.players.length < gameSetup.maxplayers)) {
     //TODO Fix bug when waiting page not appear randomly
     //? !gamesetup or players < max players to add
     return <WaitingPage lobbyname={gameSetup.name} numberOfPlayers={gameSetup.players.length} maxplayers={gameSetup.maxplayers} />;
@@ -231,6 +229,7 @@ const Game = () => {
           gameSetup.players.map((player, index) => {
             return (
               <PlayerSection
+                key={index}
                 gameSetup={gameSetup}
                 currentPlayer={currentPlayer}
                 player={player}

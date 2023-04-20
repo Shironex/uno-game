@@ -60,8 +60,9 @@ const PlayerSection = ({ gameSetup, currentPlayer, player, index, uno, setSelect
   };
 
   return (
-    <Player key={index} position={player.position!}>
+    <Player position={player.position!}>
       <CardList
+        key={player.position}
         player={player}
         positon={player.position!}
         currentPlayer={currentPlayer}

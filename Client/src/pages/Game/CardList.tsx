@@ -92,6 +92,7 @@ const CardList = ({ player, currentPlayer, GamePlayerTurn, positon, onCardClick}
           return (
             <li key={index}>
               <Card
+                key={index}
                 position={positon}
                 src={isPlayerCard ? imagecards[card.src] : CardsBack}
                 isHoverable={isPlayerCard && isPlayerTurn}

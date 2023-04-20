@@ -39,7 +39,7 @@ const Routers = () => {
           }
         />
         <Route
-          path="/join/:id"
+          path="/join/:gamename"
           element={
             <ProtectedRoute>
               <JoinLobby />
