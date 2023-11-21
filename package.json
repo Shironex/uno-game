@@ -1,5 +1,4 @@
 {
-  "name": "uno",
   "private": true,
   "scripts": {
     "build": "turbo build",
@@ -8,10 +7,10 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
+    "eslint": "^8.51.0",
     "prettier": "^3.1.0",
     "turbo": "latest"
   },
-  "packageManager": "pnpm@8.9.0"
+  "packageManager": "pnpm@8.9.0",
+  "name": "uno-monorepo"
 }
