@@ -7,15 +7,13 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({ cors: 'http://localhost:3000' })
-export class WebsocketGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
-{
+@WebSocketGateway({ cors: 'http://localhost:3000', namespace: 'lobby' })
+export class LobbyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   private server: Server;
 
   handleConnection(client: Socket) {
-    console.log(`Client connected: ${client.id}`);
+    console.log(`[LobbyGateway] Client connected: ${client.id}`);
     this.server.emit('message', 'A new player has joined!');
   }
 
