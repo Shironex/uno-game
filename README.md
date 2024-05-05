@@ -1,5 +1,8 @@
 # uno-game
 
+# Importanrt
+Project is no longer maintained. Its will be recreated with new stack when i will have more free time : )
+
 # Known / Reported Bugs
 
 | Bug                                                 |  Status  |
