@@ -3,7 +3,9 @@
   "scripts": {
     "build": "turbo build",
     "build:frontend": "turbo build --filter=frontend",
+    "start:frontend": "cd apps/frontend && npm start",
     "build:backend": "turbo build --filter=backend",
+    "start:backend": "cd apps/backend && npm start",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
