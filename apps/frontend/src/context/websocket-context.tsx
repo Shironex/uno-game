@@ -22,10 +22,10 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
   const [lobbySocket, setLobbySocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    const newgameSocket = io("http://localhost:5000/game");
-    const newchatSocket = io("http://localhost:5000/chat");
-    const newlobbySocket = io("http://localhost:5000/lobby");
-    
+    const newgameSocket = io(`${process.env.NEXT_PUBLIC_API_URL}/game`);
+    const newchatSocket = io(`${process.env.NEXT_PUBLIC_API_URL}/chat`);
+    const newlobbySocket = io(`${process.env.NEXT_PUBLIC_API_URL}/lobby`);
+
     setGameSocket(newgameSocket);
     setChatSocket(newchatSocket);
     setLobbySocket(newlobbySocket);
