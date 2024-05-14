@@ -1,7 +1,11 @@
 import React from "react";
+import Login from "./login";
 
 const LoginPage = () => {
-  return <div>LoginPage</div>;
+  // const { user } = await validateRequest()
+
+  // if (user) redirect(redirects.afterLogin)
+  return <Login />;
 };
 
 export default LoginPage;
