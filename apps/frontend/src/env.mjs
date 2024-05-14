@@ -27,6 +27,7 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_PROJECT_PLANNER_ID: z.string().min(1),
+    NEXT_PUBLIC_API_URL: z.string().url(),
     // NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
   },
   /*
@@ -44,6 +45,7 @@ export const env = createEnv({
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,
     MAINTENANCE_MODE: process.env.MAINTENANCE_MODE,
     NEXT_PUBLIC_PROJECT_PLANNER_ID: process.env.NEXT_PUBLIC_PROJECT_PLANNER_ID,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
   skipValidation: process.env.NODE_ENV === 'test' ? true : false,
   emptyStringAsUndefined: true,
