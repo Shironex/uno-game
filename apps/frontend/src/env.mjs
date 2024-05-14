@@ -14,6 +14,11 @@ export const env = createEnv({
     SMTP_PORT: z.string().min(1),
     SMTP_USER: z.string().min(1),
     SMTP_PASSWORD: z.string().min(1),
+    MAINTENANCE_MODE: z
+      .string()
+      .refine((value) => ['true', 'false'].includes(value), {
+        message: 'Maintenance mode must be boolean',
+      }),
   },
   /*
    * Environment variables available on the client (and server).
@@ -21,6 +26,7 @@ export const env = createEnv({
    * 💡 You'll get type errors if these are not prefixed with NEXT_PUBLIC_.
    */
   client: {
+    NEXT_PUBLIC_PROJECT_PLANNER_ID: z.string().min(1),
     // NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
   },
   /*
@@ -36,6 +42,8 @@ export const env = createEnv({
     SMTP_PORT: process.env.SMTP_PORT,
     SMTP_USER: process.env.SMTP_USER,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+    MAINTENANCE_MODE: process.env.MAINTENANCE_MODE,
+    NEXT_PUBLIC_PROJECT_PLANNER_ID: process.env.NEXT_PUBLIC_PROJECT_PLANNER_ID,
   },
   skipValidation: process.env.NODE_ENV === 'test' ? true : false,
   emptyStringAsUndefined: true,
