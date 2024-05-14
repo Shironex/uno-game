@@ -1,12 +1,15 @@
-import React from "react";
-import Register from "./register";
+import React from 'react'
+import Register from './register'
+import { validateRequest } from '@/lib/actions/auth/validate-request'
+import { redirect } from 'next/navigation'
+import { redirects } from '@/lib/constants'
 
-const RegisterPage = () => {
-  // const { user } = await validateRequest()
+const RegisterPage = async () => {
+  const { user } = await validateRequest()
 
-  // if (user) redirect(redirects.afterLogin)
+  if (user) redirect(redirects.afterLogin)
 
-  return <Register />;
-};
+  return <Register />
+}
 
-export default RegisterPage;
+export default RegisterPage

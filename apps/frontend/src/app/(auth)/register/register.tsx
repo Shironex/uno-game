@@ -23,6 +23,9 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { signUp } from './_components/action'
+import { toast } from 'sonner'
+import { TriangleAlertIcon } from 'lucide-react'
 
 const Register = () => {
   const form = useForm<SignupInput>({
@@ -35,14 +38,18 @@ const Register = () => {
     },
   })
 
-  const onSubmit: () => void = form.handleSubmit(
-    async (data: SignupInput) => {
-        console.log(data)
+  const onSubmit: () => void = form.handleSubmit(async (data: SignupInput) => {
+    const response = await signUp(data)
+
+    if (response?.formError) {
+      return toast(response.formError, {
+        icon: <TriangleAlertIcon className="h-5 w-5 text-primary" />,
+      })
     }
-  )
+  })
 
   return (
-    <div className="h-full w-full flex items-center justify-center">
+    <div className="flex h-full w-full items-center justify-center">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle>Sign Up</CardTitle>

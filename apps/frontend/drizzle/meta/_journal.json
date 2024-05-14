@@ -8,6 +8,13 @@
       "when": 1715681520186,
       "tag": "0000_lean_inertia",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1715687254561,
+      "tag": "0001_curly_bloodstorm",
+      "breakpoints": true
     }
   ]
 }

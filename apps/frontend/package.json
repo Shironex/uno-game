@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
+    "@lucia-auth/adapter-drizzle": "^1.0.7",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
@@ -54,14 +55,16 @@
     "drizzle-orm": "^0.30.10",
     "embla-carousel-react": "^8.0.4",
     "input-otp": "^1.2.4",
+    "lucia": "^3.2.0",
     "lucide-react": "^0.378.0",
     "next": "14.0.3",
     "next-themes": "^0.3.0",
     "nodemailer": "^6.9.13",
+    "oslo": "^1.2.0",
     "postgres": "^3.4.4",
-    "react": "^18",
+    "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
-    "react-dom": "^18",
+    "react-dom": "^18.3.1",
     "react-email": "^2.1.2",
     "react-hook-form": "^7.51.4",
     "react-resizable-panels": "^2.0.19",
@@ -73,10 +76,10 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.12.12",
     "@types/nodemailer": "^6.4.15",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.0.1",
     "dotenv-cli": "^7.4.2",
     "drizzle-kit": "^0.21.1",
@@ -84,7 +87,7 @@
     "eslint-config-next": "14.0.3",
     "postcss": "^8",
     "prettier-plugin-tailwindcss": "^0.5.14",
-    "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.5"
   }
 }

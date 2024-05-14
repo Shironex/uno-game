@@ -1,14 +1,14 @@
 import {
   boolean,
   index,
-  integer,
   timestamp,
   varchar,
   pgTable,
-  pgEnum
+  pgEnum,
+  serial,
 } from 'drizzle-orm/pg-core'
 
-export const roleEnum = pgEnum('role', ['user', 'admin']);
+export const roleEnum = pgEnum('role', ['user', 'admin'])
 
 export const users = pgTable(
   'users',
@@ -50,7 +50,7 @@ export const sessions = pgTable(
 export const emailVerificationCodes = pgTable(
   'email_verification_codes',
   {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     userId: varchar('user_id', { length: 21 }).unique().notNull(),
     email: varchar('email', { length: 255 }).notNull(),
     code: varchar('code', { length: 8 }).notNull(),

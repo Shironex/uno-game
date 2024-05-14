@@ -1,14 +1,14 @@
-"use client";
-import { PasswordInput } from "@/components/password-input";
-import { SubmitButton } from "@/components/submit-button";
-import { Button } from "@/components/ui/button";
+'use client'
+import { PasswordInput } from '@/components/password-input'
+import { SubmitButton } from '@/components/submit-button'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -16,30 +16,46 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { LoginInput, loginSchema } from "./_components/validation";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Link from 'next/link'
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { LoginInput, loginSchema } from './_components/validation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { login } from './_components/action'
+import { toast } from 'sonner'
+import { TriangleAlertIcon } from 'lucide-react'
+import { redirects } from '@/lib/constants'
 
 const Login = () => {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const form = useForm<LoginInput>({
-    mode: "onChange",
+    mode: 'onChange',
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
-  });
+  })
 
-  const onSubmit: () => void = form.handleSubmit(
-    async (data: LoginInput) => {
-      console.log(data);
+  const onSubmit: () => void = form.handleSubmit(async (data: LoginInput) => {
+    const response = await login(data)
 
+    if (response?.formError) {
+      return toast(response.formError, {
+        icon: <TriangleAlertIcon className="h-5 w-5 text-primary" />,
+      })
     }
-  );
+
+    toast(response.success, {
+      icon: <TriangleAlertIcon className="h-5 w-5 text-primary" />,
+    })
+
+    return router.push(searchParams.get('from') ?? redirects.afterLogin)
+  })
 
   return (
     <Card className="w-full max-w-md">
@@ -93,19 +109,17 @@ const Login = () => {
             />
 
             <div className="flex flex-wrap justify-between">
-              <Button variant={"link"} size={"sm"} className="p-0" asChild>
-                <Link href='/register'>
-                  Not signed up? Sign up now.
-                </Link>
+              <Button variant={'link'} size={'sm'} className="p-0" asChild>
+                <Link href="/register">Not signed up? Sign up now.</Link>
               </Button>
               <Button
-                variant={"link"}
-                size={"sm"}
+                variant={'link'}
+                size={'sm'}
                 className="p-0"
                 disabled
                 data-cy="forgot-password-btn"
               >
-                <Link href={"#"}>Forgot password?</Link>
+                <Link href={'#'}>Forgot password?</Link>
               </Button>
             </div>
 
@@ -116,7 +130,7 @@ const Login = () => {
         </Form>
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

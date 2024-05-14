@@ -1,0 +1,1 @@
+ALTER TABLE "email_verification_codes" ALTER COLUMN "id" SET DATA TYPE serial;

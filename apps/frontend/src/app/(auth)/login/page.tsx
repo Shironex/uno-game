@@ -1,11 +1,15 @@
-import React from "react";
-import Login from "./login";
+import React from 'react'
+import Login from './login'
+import { validateRequest } from '@/lib/actions/auth/validate-request'
+import { redirect } from 'next/navigation'
+import { redirects } from '@/lib/constants'
 
-const LoginPage = () => {
-  // const { user } = await validateRequest()
+const LoginPage = async () => {
+  const { user } = await validateRequest()
 
-  // if (user) redirect(redirects.afterLogin)
-  return <Login />;
-};
+  if (user) redirect(redirects.afterLogin)
 
-export default LoginPage;
+  return <Login />
+}
+
+export default LoginPage
