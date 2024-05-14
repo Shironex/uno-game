@@ -6,8 +6,9 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import configuration from 'src/config/configuration';
 
-@WebSocketGateway({ cors: process.env.FRONTEND_URL, namespace: 'lobby' })
+@WebSocketGateway({ cors: configuration().FRONTEND_URL, namespace: 'lobby' })
 export class LobbyGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   private server: Server;
