@@ -33,67 +33,75 @@ const CreateLobby = () => {
 
   function handeLobbyCreate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    SetLoading(true);
-    if (!name.current || name.current.value == "" || !numberofplayers.current || !coins.current) 
-    {
-      SetLoading(false);
-      return;
-    } else 
-    if (!/^[a-zA-Z0-9]{4,20}$/.test(name.current.value)) {
-      SetLoading(false);
-      toast({
-        id: errortoastid,
-        title: errortoastid,
-        description: `lobby name must be minimum of 4 characters and can not have special characters!`,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
-      return;
-    }
-    if (Number(coins.current.value) > user!.coins )
-    {
-      SetLoading(false);
-      toast({
-        id: errortoastid,
-        title: errortoastid,
-        description: `U dont have enough coins to create this game u have ${user?.coins} and u need ${coins.current.value}`,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-        position: "top",
-      });
-      return;
-    }
 
-    setTimeout(() => {
-      emit("Create-Game", {
-        id: user!.id,
-        leader: user!.username,
-        name: name.current!.value,
-        maxplayers: numberofplayers.current!.value,
-        coins: coins.current!.value,
-      });
-      on("Server Error", (data: {code: string, message: string}) => {
+    SetLoading(true);
+    
+    try {
+      if (!name.current || name.current.value == "" || !numberofplayers.current || !coins.current) 
+      {
         SetLoading(false);
-        if (!toast.isActive(data.code)) {
-          toast({
-            id: data.code,
-            title: data.code,
-            description: data.message,
-            status: "error",
-            duration: 3500,
-            isClosable: true,
-            position: "top",
-          });
-        }
-      });
-      on("Game-Created", (Name: string) => {
+        return;
+      } else 
+      if (!/^[a-zA-Z0-9]{4,20}$/.test(name.current.value)) {
         SetLoading(false);
-        navigate(`/lobby/${Name}`);
-      });
-    }, 1000);
+        toast({
+          id: errortoastid,
+          title: errortoastid,
+          description: `lobby name must be minimum of 4 characters and can not have special characters!`,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+        return;
+      }
+      if (Number(coins.current.value) > user!.coins )
+      {
+        SetLoading(false);
+        toast({
+          id: errortoastid,
+          title: errortoastid,
+          description: `U dont have enough coins to create this game u have ${user?.coins} and u need ${coins.current.value}`,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top",
+        });
+        return;
+      }
+  
+      setTimeout(() => {
+        emit("Create-Game", {
+          id: user!.id,
+          leader: user!.username,
+          name: name.current!.value,
+          maxplayers: numberofplayers.current!.value,
+          coins: coins.current!.value,
+        });
+        on("Server Error", (data: {code: string, message: string}) => {
+          SetLoading(false);
+          if (!toast.isActive(data.code)) {
+            toast({
+              id: data.code,
+              title: data.code,
+              description: data.message,
+              status: "error",
+              duration: 3500,
+              isClosable: true,
+              position: "top",
+            });
+          }
+        });
+        on("Game-Created", (Name: string) => {
+          SetLoading(false);
+          navigate(`/lobby/${Name}`);
+        });
+      }, 1000);
+      
+    } catch (error) {
+      SetLoading(false);
+      console.log(error);
+    }
   }
 
   return (

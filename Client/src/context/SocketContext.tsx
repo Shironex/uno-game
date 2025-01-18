@@ -19,8 +19,8 @@ type TSocketContext = {
   isConnected: boolean;
 };
 
-//const SOCKET_IO_SERVER_URL = "ws://localhost:3000";
-const SOCKET_IO_SERVER_URL = "ws://uno-game.herokuapp.com";
+const SOCKET_IO_SERVER_URL = "ws://localhost:3000";
+// const SOCKET_IO_SERVER_URL = "ws://uno-game.herokuapp.com";
 
 const SocketContext = createContext<TSocketContext>({
   socket: null,

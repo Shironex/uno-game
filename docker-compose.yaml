@@ -1,0 +1,9 @@
+version: "3.5"
+
+services:
+  mongodb:
+    image: mongo:latest
+    environment:
+      - MONGODB_DATABASE="uno"
+    ports:
+      - 27017:27017
